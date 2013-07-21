@@ -267,7 +267,7 @@ def plotTruth():
 
 
 plotAll('overview')
-#plotTeams()
+plotTeams()
 #plotTruth()
 
 def testplot():

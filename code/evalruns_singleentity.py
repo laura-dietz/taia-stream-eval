@@ -36,6 +36,20 @@ else:
     judgmentLevel=1
 
 
+if len(sys.argv)>6:
+   team1 = sys.argv[3]
+   run1= sys.argv[4]
+   team2 = sys.argv[5]
+   run2 = sys.argv[6]
+else:    
+   team2 = 'udel_fang'
+   run2 = 'UDInfoKBA_WIKI1'
+   #team2 = 'UMass_CIIR'
+   #run2 = 'PC_RM10_1500'
+   #team2 ='uiucGSLIS'
+   #run2='gslis_adaptive'
+   team1 = 'CWI'
+   run1= 'google_dic_3'
 
 
 
@@ -92,8 +106,8 @@ fullEntityList = [
 #entityListFromData = np.unique(a['query'])
 
 
-if len(sys.argv)>3:
-    singleEntity = sys.argv[3]
+if len(sys.argv)>7:
+    singleEntity = sys.argv[7]
     entityList = [singleEntity]
 else:
     entityList = fullEntityList
@@ -186,14 +200,6 @@ teamColors={team:cm.hsv(1. * i/len(allteams),1) for i,team in enumerate(np.uniqu
 for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
    #team1 = 'UvA'
    #run1 = 'UvAIncLearnHigh'
-   team2 = 'udel_fang'
-   run2 = 'UDInfoKBA_WIKI1'
-   #team2 = 'UMass_CIIR'
-   #run2 = 'PC_RM10_1500'
-   #team2 ='uiucGSLIS'
-   #run2='gslis_adaptive'
-   team1 = 'CWI'
-   run1= 'google_dic_3'
    intervalType ='day'
     
    for entity in entityList:
@@ -269,7 +275,7 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
         
         fig.subplots_adjust(hspace=0.5, wspace=0.5)
         #plt.suptitle("%s" %(entity))
-        figureFilename="%s%s_%s_sidebyside.pdf"%(os.path.expanduser(evalDir),entity,metric)
+        figureFilename="%s%s_%s-vs-%s_%s_sidebyside_%s_%s.pdf"%(os.path.expanduser(evalDir),team1, run1, team2, run2, metric, entity)
         plt.savefig(figureFilename, bbox_inches='tight')
         print figureFilename
         

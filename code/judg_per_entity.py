@@ -152,4 +152,6 @@ def singlePlot(entity, judgmentLevel):
             print 'saving ',figureFilename
             plt.savefig(figureFilename,  bbox_inches='tight')
                 
-singlePlot('Mario_Garnero', 1)
+# singlePlot('Mario_Garnero', 1)
+for entity in fullEntityList:
+    singlePlot(entity,1)
