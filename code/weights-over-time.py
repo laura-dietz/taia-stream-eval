@@ -16,14 +16,12 @@ plotDir = 'aggregation_weights/'
 
 
 parser = ArgumentParser()
-parser.add_argument('--plot-teams', action='store_true',default=False)
 parser.add_argument('--judgmentLevel', type=int, help='Judgement level', default=1)
 parser.add_argument('--weighted', action='store_true', default=False)
 parser.add_argument('-d', '--dir', metavar='DIR', default=evalDir)
 args = parser.parse_args()
 
 judgmentLevel = args.judgmentLevel
-plotTeams = args.plot_teams
 CORRECTED = args.weighted
 evalDir = os.path.expanduser(args.dir)
 if not os.path.exists(evalDir+plotDir):
@@ -31,12 +29,6 @@ if not os.path.exists(evalDir+plotDir):
 print "writing plots to ",(evalDir+plotDir)
 
 
-
-
-
-weekRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
-dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
-allRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
 testEntityList = [ 'Alex_Kapranos' ,'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
 fullEntityList = [
@@ -123,12 +115,9 @@ def createWeightPlot(prefix, entityList, title):
         for (intervalLow, intervalUp) in intervalBounds[judgmentLevel][intervalType]:
 
 
-            #print 'correctedValues', correctedValues
-            team = 'any'
-            runname = 'any'
             unjudgedAs = 'neg'
 
-            weightedValues = [ correctWeighting( 0.5
+            weightedValues = [ correctWeighting( 1.0
                 , posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)
                 , posTruths(judgmentLevel, entity)
                 , numPosIntervals(judgmentLevel, entity, intervalType))
