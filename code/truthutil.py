@@ -1,7 +1,14 @@
+"""
+Utilities for accessing the ground truth.
+
+You need to change the COLLAPSED_JUDGMENT_FILE variable
+"""
+
 import os.path
 import numpy as np
-from numpy.lib import recfunctions
 from utils import *
+
+COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'
 
 # A decorator for memoization
 def memoize(f):
@@ -19,14 +26,11 @@ def memoize(f):
 def read_judgments(fname):
     judg_dtype = np.dtype([('docid', '50a'), ('query', '50a'),
                         ('label', 'd4'), ('time','d4')])
-    #a = np.genfromtxt(fname, dtype=judg_dtype,usecols=[2,3,5,6], delimiter='\t') # old format
     a = np.genfromtxt(fname, dtype=judg_dtype,usecols=[1,2,4,5], delimiter='\t')
     # this code is not needed anymore
-    #times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:,0]]
-    #return recfunctions.append_fields(a, 'time', times)
     return a
 
-j = read_judgments(os.path.expanduser('~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'))
+j = read_judgments(os.path.expanduser(COLLAPSED_JUDGMENT_FILE))
 print 'Read %d judgements' % len(j)
 
 
@@ -72,15 +76,6 @@ def listOfPosIntervalsForEntity(judgmentLevel, entity, intervalBounds):
             if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
            ]
 
-#def listOfPosIntervalsForEntity(judgmentLevel, entity, intervalBounds):        
-#    return [(intervalLow, intervalUp) 
-#            for (intervalLow,intervalUp) in intervalBounds
-#            if np.count_nonzero( j[np.logical_and(j['query'] == entity, 
-#                                   np.logical_and(j['label'] >= judgmentLevel,
-#                                   np.logical_and(j['time'] >= intervalLow,
-#                                                  j['time'] < intervalUp)))]) > 0                                                                    
-#           ]
-
 
 def listOfPosIntervals(judgmentLevel, intervalBounds):        
     return [(intervalLow, intervalUp) 
@@ -97,7 +92,6 @@ intervalBounds = { judgmentLevel:
                    } 
                    for judgmentLevel in np.unique(j['label'])
                  }
-#print intervalBounds
 
 numberOfIntervals = {judgmentLevel:
                      { intervalType : len(bounds)
@@ -159,12 +153,9 @@ def test():
         
         intervalList = [(1325376000, 1338508800)]
 
-#        for (low,up) in intervalList:
-#            print 'posTruthsInterval', posTruthsInterval(1, 'Aharon_Barak', low,up)
-    
+
         total = sum(posTruthsInterval(1, entity, low,up) for (low,up) in intervalList)        
         imm = posTruthsInterval(1, entity, evalTR, evalTRend)
         totalTruth = posTruths(1,entity)
         print (totalTruth-total),'totalTruths',totalTruth, 'summed total',total, imm, entity
 
-#test()    
