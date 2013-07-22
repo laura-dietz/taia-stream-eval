@@ -1,3 +1,7 @@
+"""
+Create randomly perturbed rankings to study the robustness of the measure with respect to variations in the ground truth.
+"""
+
 import matplotlib.pyplot as pl
 import numpy as np
 import random
@@ -5,8 +9,6 @@ from math import floor
 from metrics import *
         
 groundtruths = [(100,100),(50,50),(5,5),(20,180),(10,90),(1,9)]
-#groundtruths = [(100,100),(50,50),(5,5)]
-#groundtruths = [(20,180),(10,90),(1,9)]
 perturbations = [0.1, 0.25, 0.5]
 
 invisGt=0
