@@ -17,12 +17,11 @@ plotDir = 'aggregation_weights/'
 
 parser = ArgumentParser()
 parser.add_argument('--judgmentLevel', type=int, help='Judgement level', default=1)
-parser.add_argument('--weighted', action='store_true', default=False)
 parser.add_argument('-d', '--dir', metavar='DIR', default=evalDir)
 args = parser.parse_args()
 
 judgmentLevel = args.judgmentLevel
-CORRECTED = args.weighted
+CORRECTED = True
 evalDir = os.path.expanduser(args.dir)
 if not os.path.exists(evalDir+plotDir):
     os.makedirs(evalDir+plotDir)
@@ -80,12 +79,12 @@ hfmt = dates.DateFormatter('%m/%d')
 entityColors='myb'
 entityIdx=0
 
-stats_dtype = np.dtype([('team','50a'),('runname','50a'),('intervalLow','f4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('mean','f4'),('stdev','f4'),('intervalType','50a')])
+stats_dtype = np.dtype([('entityListName','50a'),('intervalLow','f4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('mean','f4'),('stdev','f4'),('intervalType','50a')])
 
 
 
-def createStatsRecord(team, runname, intervalLow, unjudgedAs, judgmentLevel, metricname, mean, stdev, intervalType):
-    return np.array([(team, runname, intervalLow, unjudgedAs,judgmentLevel,metricname, mean, stdev, intervalType)],  dtype=stats_dtype)
+def createStatsRecord(entityListName, intervalLow, unjudgedAs, judgmentLevel, metricname, mean, stdev, intervalType):
+    return np.array([(entityListName, intervalLow, unjudgedAs,judgmentLevel,metricname, mean, stdev, intervalType)],  dtype=stats_dtype)
 
 records = []
 
@@ -103,6 +102,8 @@ def teamColor(team):
 teamss=[]
 
 def createWeightPlot(prefix, entityList, title):
+    if len(entityList) ==1: entityListName = entityList[0]
+    else: entityListName= "all"
     plt.suptitle('weights '+title)
     for idx,intervalType in enumerate(['all','week','day']):
         fig.add_subplot(1,2,1)
@@ -125,7 +126,7 @@ def createWeightPlot(prefix, entityList, title):
                                 if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
             ]
             if(len(weightedValues)>0):
-                records.append(createStatsRecord("global", "global", intervalLow, unjudgedAs, judgmentLevel, "weight", np.mean(weightedValues), np.std(weightedValues), intervalType))
+                records.append(createStatsRecord(entityListName, intervalLow, unjudgedAs, judgmentLevel, "weight", np.mean(weightedValues), np.std(weightedValues), intervalType))
                 ys.append(np.mean(weightedValues))
                 xs.append(intervalLow)
 
@@ -153,9 +154,23 @@ def plotWeights():
     for entity in entityList:
         createWeightPlot(evalDir+plotDir+entity+"__weights__", [entity], entity)
 
+def savePlottedValues(plottedValues):
+    tableFile = "%s_weights_over_time_%s.tsv"%(evalDir+plotDir, judgmentLevelToStr(judgmentLevel))
+    #tableFile="%s%s_micro_stats_%s_%s.tsv"%(os.path.expanduser(evalDir),judgmentLevelToStr(judgmentLevel), correctedToStr())
+    #stats_dtype = np.dtype([('team','50a'),('runname','50a'),('intervalLow','f4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('mean','f4'),('stdev','f4'),('intervalType','50a')])
+
+    print plottedValues[:1]
+    np.savetxt(tableFile,plottedValues,fmt='%s\t%f\t%s\t%d\t%s\t%f\t%f\t%s')
+
+    #np.savetxt(tableFile, table,fmt='%s\t%s\t%s\t%s\t%s')
+    print 'micro stats in table ',tableFile
+
 
 
 plotWeights()
 
 plottedValues=np.hstack(records)
+savePlottedValues(plottedValues)
+
+
 print(plottedValues)

@@ -3,7 +3,7 @@
 import os.path
 import numpy as np
 from metrics import *
-from utils import epochsToDate
+from utils import *
 import sys
 import string
 import matplotlib.pyplot as plt
@@ -11,7 +11,7 @@ from matplotlib import dates
 import datetime
 from matplotlib.dates import DateFormatter, WeekdayLocator, MONDAY
 
-DEBUG = True
+
 WEEK = True
 if len(sys.argv)>1:
     evalFile = sys.argv[1]
@@ -20,6 +20,7 @@ else:
         evalFile = '~/kba-evaluation/taia/data/umass-runs/UMass_CIIR-FS_NV_6000.gz-eval-week.tsv'
     else :    
         evalFile = '~/kba-evaluation/taia/data/umass-runs/UMass_CIIR-FS_NV_6000.gz-eval-day.tsv'
+
 
 if(WEEK):
     avgWindow = 4
@@ -60,18 +61,14 @@ fullEntityList = [
     'William_H._Gates,_Sr',
     ]
 #entityListFromData = np.unique(a['query'])
-entityList = fullEntityList
+entityList = testEntityList
 
-
-
-if DEBUG: entityList = testEntityList
 
 
 eval_dtype = np.dtype([('team','50a'),('runname','50a'),('query','50a'),('intervalLow','d4'),('intervalUp','d4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('value','f4')])                        
 
 df = np.genfromtxt(os.path.expanduser(evalFile), dtype=eval_dtype, missing_values='', autostrip=False, delimiter='\t')
 
-if DEBUG: entityList = testEntityList
 
 
 
@@ -99,7 +96,7 @@ for judgmentLevel in [1,2]:
     
                 window = np.ones(int(avgWindow))/float(avgWindow)
                 intervalData = np.convolve(data['value'], window, 'same')
-                plt.plot(epochsToDate(data['intervalLow']),intervalData, c=entityColors[entityIdx])
+                plt.plot(epochsToDate(data['intervalLow']),intervalData, entityColors[entityIdx])
                 
                 plt.ylabel(renameMetric(metric))
                 plt.xlabel('ETR days')
