@@ -31,6 +31,7 @@ run1 = args.run1
 team2 = args.team2
 run2 = args.run2
 judgmentLevel = args.judgmentLevel
+print 'using judgmentLevel', judgmentLevel
 
 evalDir = os.path.expanduser(args.dir)
 if not os.path.exists(evalDir+plotDir):
@@ -91,8 +92,7 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
    intervalType ='day'
     
    for entity in entityList:
-        judgmentLevel=1
-        
+
         runfile1 = (os.path.expanduser(evalDir)+('input.%s-%s.gz-eval-%s.tsv'%(team1,run1,intervalType)))
         
         runfile2 = (os.path.expanduser(evalDir)+('input.%s-%s.gz-eval-%s.tsv'%(team2,run2,intervalType)))
@@ -153,6 +153,6 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
         
         fig.subplots_adjust(hspace=0.5, wspace=0.5)
         plt.suptitle("%s" %(entity))
-        figureFilename="%s%s_%s-vs-%s_%s_sidebyside_%s_%s.pdf"%(os.path.expanduser(evalDir),team1, run1, team2, run2, metric, entity)
+        figureFilename="%s%s_%s-vs-%s_%s_sidebyside_%s_%s.pdf"%(evalDir+plotDir,team1, run1, team2, run2, metric, entity)
         plt.savefig(figureFilename, bbox_inches='tight')
         print figureFilename

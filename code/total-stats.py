@@ -1,22 +1,15 @@
 import os.path
 import numpy as np
-from metrics import *
-import sys
-import string
-import matplotlib.pyplot as plt
 from matplotlib import dates
-import datetime
-from matplotlib.dates import DateFormatter, WeekdayLocator, MONDAY
-import operator
 import math
 from truthutil import *
-from utils import *
 from argparse import ArgumentParser
 
 DEBUG = False
 evalDir = '~/kba-evaluation/taia/data/umass-runs/'
 
 tableDir = 'overall_stats/'
+entityTableDir = 'entity_stats/'
 
 parser = ArgumentParser()
 parser.add_argument('--judgmentLevel', type=int, help='Judgement level', default=1)
@@ -29,6 +22,8 @@ CORRECTED = args.weighted
 evalDir = os.path.expanduser(args.dir)
 if not os.path.exists(evalDir+tableDir):
     os.makedirs(evalDir+tableDir)
+if not os.path.exists(evalDir+entityTableDir):
+    os.makedirs(evalDir+entityTableDir)
 print "writing tables to ",(evalDir+tableDir)
 
 
@@ -76,10 +71,6 @@ entityList = fullEntityList
 
 eval_dtype = np.dtype([('team','50a'),('runname','50a'),('query','50a'),('intervalLow','d4'),('intervalUp','d4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('value','f4')])
 
-hfmt = dates.DateFormatter('%m/%d')
-
-entityColors='myb'
-entityIdx=0
 
 def correctedToStr():
     return 'WEIGHTED' if CORRECTED else 'UNIFORM'
@@ -115,8 +106,7 @@ def computePerformance():
                                          np.logical_and(df['metric']==metric, df['judgmentLevel']==judgmentLevel))]
                 
                 if len(data)>0:
-                    #print data
-                    team = data[0]['team']                                     
+                    team = data[0]['team']
                     runname = data[0]['runname']
                     unjudgedAs = data[0]['unjudged']
                     unifValues = data['value']
@@ -127,14 +117,8 @@ def computePerformance():
                     totalposvalues = posTruths(judgmentLevel, entity)
                     weightedValues = ppdata/totalposvalues*numberOfIntervals[intervalType]*unifValues
                     values = unifValues if not CORRECTED else weightedValues
-
-                    aaaa = np.mean(values)
-
-                    #print 'used', np.mean(unifValues), np.mean(weightedValues), np.mean(values)
-                    #print 'fillwithzeros',numberOfIntervals[intervalType],'-',len(values) 
                     values = values[np.nonzero(values)]
-                    #print values
-                    v = np.append(values, np.zeros(numberOfIntervals[intervalType]-len(values))) 
+                    v = np.append(values, np.zeros(numberOfIntervals[intervalType]-len(values)))
                     records.append(createStatsRecord(team, runname, entity, unjudgedAs, judgmentLevel, metric, np.mean(v), np.std(v), intervalType))
 
 
@@ -214,7 +198,7 @@ def entityPerformance(entity, metric):
     if(sortedPerformancePerEntity):
         for ((team,run),(v1,v2,v3)) in sortedPerformancePerEntity: print team,run,'\t',v1,v2,v3 
     
-        tableFile="%s%s_entity_stats_%s_%s_%s.tsv"%(evalDir+tableDir,metric,entity,judgmentLevelToStr(judgmentLevel), correctedToStr())
+        tableFile="%s%s_entity_stats_%s_%s_%s.tsv"%(evalDir+entityTableDir,metric,entity,judgmentLevelToStr(judgmentLevel), correctedToStr())
         table = [(k1,k2,v1,v2,v3) for ((k1,k2),(v1,v2,v3)) in sortedPerformancePerEntity]
         np.savetxt(tableFile, table,fmt='%s\t%s\t%s\t%s\t%s')
         print tableFile
