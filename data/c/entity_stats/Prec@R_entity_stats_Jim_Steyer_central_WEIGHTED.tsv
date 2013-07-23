@@ -1,0 +1,9 @@
+udel_fang	UDInfoKBA_WIKI1	0.5625	0.812500059605	0.9375
+LSIS	lsisRFAll	0.625	0.625000059605	0.875
+UMass_CIIR	PC_RM10_1500	0.375	0.625000059605	0.8125
+uiucGSLIS	gslis_adaptive	0.625	0.625	0.5625
+UvA	UvAIncLearnHigh	nan	0.562500059605	nan
+hltcoe	wordNER500	0.0625	0.0624999329448	0.0625
+CWI	google_dic_3	0.0	0.0	0.0
+igpi2012	ner_jaccard	0.0	0.0	0.0
+helsinki	disgraph2	0.0	0.0	0.0

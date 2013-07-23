@@ -1,0 +1,9 @@
+UMass_CIIR	PC_RM10_1500	0.166666999459	0.25	0.5
+UvA	UvAIncLearnHigh	nan	0.125	nan
+uiucGSLIS	gslis_adaptive	0.0	0.125	0.166666671634
+udel_fang	UDInfoKBA_WIKI1	0.0	0.0	0.166666671634
+CWI	google_dic_3	0.0	0.0	0.333333343267
+igpi2012	ner_jaccard	0.0	0.0	0.0
+helsinki	disgraph2	0.0	0.0	0.0
+LSIS	lsisRFAll	0.0	0.0	0.166666671634
+hltcoe	wordNER500	0.0	0.0	0.0
