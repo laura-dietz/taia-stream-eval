@@ -25,7 +25,7 @@ from targetentities import *
 DEBUG=False        
 
 metrics = {
-'nDCG@R': ndcgREval,'Prec@R': precREval, 'correctedAUC':normalizeAUC, 'MAP':mapEval, 'extendedAUC':normalizeExtendedAUC}
+'nDCG@R': ndcgREval,'Prec@R': precREval, 'MAP':mapEval}
 
 
 runFile = '~/kba-evaluation/taia/data/umass-runs/UMass_CIIR-PC_RM20_1500.gz'        
