@@ -1,3 +1,6 @@
+import filenames
+
+
 epochsPerWeek = int(6.048E5)
 epochsPerDay = 86400
 
@@ -5,7 +8,9 @@ epochsPerDay = 86400
 ## evalTR = 1325376000  # this is the old eval time range, Jan 1st
 #evalTR = 1326334731 # this is the new eval time range, J1
 #evalTRend = 1338508800
-from filenames import evalTR, evalTRend
+
+evalTR = filenames.evalTR
+evalTRend = filenames.evalTRend
 
 def epochsToDate(d):
     return (d - evalTR) / epochsPerDay

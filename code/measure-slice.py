@@ -89,8 +89,6 @@ entityList = loadEntities()
 
 if DEBUG: entityList = testEntityList
 
-sliceBy = ('day' if epochsPerDay == epochsPerInterval else 'week' if epochsPerWeek == epochsPerInterval else 'other')
-
 records = []
 
 print runFile
@@ -103,7 +101,7 @@ def createEvalRecord(entity, intervalLow, intervalUp, unjudgedAs, judgmentLevel,
 
 runOutputFile = None
 if DUMP_TREC_EVAL:
-    runOutputFilename = "%s-%s.run" % (os.path.expanduser(runFile), sliceBy)
+    runOutputFilename = "%s-%s.run" % (os.path.expanduser(runFile), intervalType)
     runOutputFile = open(runOutputFilename, 'w')
 
 for entity in entityList:
