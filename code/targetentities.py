@@ -5,6 +5,7 @@ import json
 import time
 import copy
 import logging
+from filenames import TOPIC_FILE
 
 #filter_run = {
 #    "$schema": "http://trec-kba.org/schemas/v1.1/filter-run.json",
@@ -56,8 +57,8 @@ fullEntityListYear1 = [
 
 def loadEntities():
     ## load entities
-    topicfile = '/home/dietz/kbbridge/code/kba-y2/data/trec-kba-ccr-and-ssf-2013-04-22/trec-kba-ccr-and-ssf-query-topics-2013-04-08.json'
-    filter_topics = json.load(open(topicfile))
+
+    filter_topics = json.load(open(TOPIC_FILE))
 
     ## set the topic set identifier in filter_run
     #filter_run["topic_set_id"] = filter_topics["topic_set_id"]
