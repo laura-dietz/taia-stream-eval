@@ -4,6 +4,7 @@ from matplotlib import dates
 import math
 from truthutil import *
 from argparse import ArgumentParser
+import targetentities
 
 DEBUG = False
 evalDir = '~/kba-evaluation/taia/data/umass-runs/'
@@ -36,37 +37,7 @@ weekRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.pat
 dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
 allRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
-fullEntityList = [
-    'Aharon_Barak',
-    'Alexander_McCall_Smith',
-    'Alex_Kapranos',
-    'Annie_Laurie_Gaylor',
-    'Basic_Element_(company)',
-    'Basic_Element_(music_group)',
-    'Bill_Coen',
-    'Boris_Berezovsky_(businessman)',
-    'Boris_Berezovsky_(pianist)',
-    'Charlie_Savage',
-    'Darren_Rowse',
-    'Douglas_Carswell',
-    'Frederick_M._Lawrence',
-    'Ikuhisa_Minowa',
-    'James_McCartney',
-    'Jim_Steyer',
-    'Lisa_Bloom',
-    'Lovebug_Starski',
-    'Mario_Garnero',
-    'Masaru_Emoto',
-    'Nassim_Nicholas_Taleb',
-    'Rodrigo_Pimentel',
-    'Roustam_Tariko',
-    'Ruth_Rendell',
-    'Satoshi_Ishii',
-    'Vladimir_Potanin',
-    'William_Cohen',
-    'William_D._Cohan',
-    'William_H._Gates,_Sr',
-    ]
+fullEntityList =targetentities.fullEntityListYear1
 entityList = fullEntityList
 
 eval_dtype = np.dtype([('team','50a'),('runname','50a'),('query','50a'),('intervalLow','d4'),('intervalUp','d4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('value','f4')])

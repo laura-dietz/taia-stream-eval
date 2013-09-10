@@ -7,8 +7,11 @@ You need to change the COLLAPSED_JUDGMENT_FILE variable
 import os.path
 import numpy as np
 from utils import *
+import targetentities
 
-COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'
+#COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'  # year 1
+COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-07-08.filter-run.txt' # year 2
+
 
 # A decorator for memoization
 def memoize(f):
@@ -64,11 +67,14 @@ def posTruths(judgmentLevel, entity):
 
 @memoize
 def isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp):
-    j2 = entityJudgments[entity]
-    
-    return np.any(np.logical_and(j2['label'] >= judgmentLevel,
-                  np.logical_and(j2['time'] >= intervalLow,
-                                 j2['time'] < intervalUp)))
+    if(entity in entityJudgments):
+        j2 = entityJudgments[entity]
+
+        return np.any(np.logical_and(j2['label'] >= judgmentLevel,
+                      np.logical_and(j2['time'] >= intervalLow,
+                                     j2['time'] < intervalUp)))
+    else:
+        return False
 
 def listOfPosIntervalsForEntity(judgmentLevel, entity, intervalBounds):        
     return [(intervalLow, intervalUp) 
@@ -101,12 +107,16 @@ numberOfIntervals = {judgmentLevel:
 
 @memoize
 def numPosIntervals(judgmentLevel, entity, intervalType):
-    j2 = entityJudgments[entity]
-    n = sum(np.any(np.logical_and(j2['label'] >= judgmentLevel,
-                   np.logical_and(j2['time'] >= intervalLow,
-                                  j2['time'] < intervalUp)))
-            for (intervalLow,intervalUp) in intervalBounds[judgmentLevel][intervalType])
-    return n
+    if(entity in entityJudgments):
+        j2 = entityJudgments[entity]
+        n = sum(np.any(np.logical_and(j2['label'] >= judgmentLevel,
+                       np.logical_and(j2['time'] >= intervalLow,
+                                      j2['time'] < intervalUp)))
+                for (intervalLow,intervalUp) in intervalBounds[judgmentLevel][intervalType])
+        return n
+    else:
+        print 'entity does not have judgments ',entity
+        return 0
     
 def loadIntervals(judgmentLevel, entityList, intervalBounds):
     return {entity:{   low:
@@ -116,42 +126,15 @@ def loadIntervals(judgmentLevel, entityList, intervalBounds):
 
 
 def test():
-    fullEntityList = [
-    'Aharon_Barak',
-    'Alexander_McCall_Smith',
-    'Alex_Kapranos',
-    'Annie_Laurie_Gaylor',
-    'Basic_Element_(company)',
-    'Basic_Element_(music_group)',
-    'Bill_Coen',
-    'Boris_Berezovsky_(businessman)',
-    'Boris_Berezovsky_(pianist)',
-    'Charlie_Savage',
-    'Darren_Rowse',
-    'Douglas_Carswell',
-    'Frederick_M._Lawrence',
-    'Ikuhisa_Minowa',
-    'James_McCartney',
-    'Jim_Steyer',
-    'Lisa_Bloom',
-    'Lovebug_Starski',
-    'Mario_Garnero',
-    'Masaru_Emoto',
-    'Nassim_Nicholas_Taleb',
-    'Rodrigo_Pimentel',
-    'Roustam_Tariko',
-    'Ruth_Rendell',
-    'Satoshi_Ishii',
-    'Vladimir_Potanin',
-    'William_Cohen',
-    'William_D._Cohan',
-    'William_H._Gates,_Sr',
-    ]
+    fullEntityList =targetentities.fullEntityListYear1
+
     for entity in fullEntityList:
-        evalTR = 1325376000
-        evalTRend = 1338508800
-        
-        intervalList = [(1325376000, 1338508800)]
+        #evalTR = 1325376000 # year 1
+        #evalTRend = 1338508800  # year 1
+        evalTR = 1330559999000  # year 2
+        evalTRend = 1360368000  # year 2
+
+        intervalList = [(evalTR, evalTRend)]
 
 
         total = sum(posTruthsInterval(1, entity, low,up) for (low,up) in intervalList)        

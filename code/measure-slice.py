@@ -19,6 +19,7 @@ import string
 from utils import *
 from truthutil import *
 from argparse import ArgumentParser
+from targetentities import *
 
         
 DEBUG=False        
@@ -85,38 +86,8 @@ print team, runname
 a = read_zipped_predictions(os.path.expanduser(runFile))
 
 testEntityList = [     'Boris_Berezovsky_(businessman)',    'Boris_Berezovsky_(pianist)',    'Alex_Kapranos',    'James_McCartney' ]
-fullEntityList = [
-    'Aharon_Barak',
-    'Alexander_McCall_Smith',
-    'Alex_Kapranos',
-    'Annie_Laurie_Gaylor',
-    'Basic_Element_(company)',
-    'Basic_Element_(music_group)',
-    'Bill_Coen',
-    'Boris_Berezovsky_(businessman)',
-    'Boris_Berezovsky_(pianist)',
-    'Charlie_Savage',
-    'Darren_Rowse',
-    'Douglas_Carswell',
-    'Frederick_M._Lawrence',
-    'Ikuhisa_Minowa',
-    'James_McCartney',
-    'Jim_Steyer',
-    'Lisa_Bloom',
-    'Lovebug_Starski',
-    'Mario_Garnero',
-    'Masaru_Emoto',
-    'Nassim_Nicholas_Taleb',
-    'Rodrigo_Pimentel',
-    'Roustam_Tariko',
-    'Ruth_Rendell',
-    'Satoshi_Ishii',
-    'Vladimir_Potanin',
-    'William_Cohen',
-    'William_D._Cohan',
-    'William_H._Gates,_Sr',
-    ]
-entityList = fullEntityList
+
+entityList = loadEntities()
 
 
 if DEBUG: entityList = testEntityList
@@ -141,6 +112,7 @@ if DUMP_TREC_EVAL :
 
 
 for entity in entityList:
+    print 'fetching annotations for entity',entity
     
     intervalList = intervalBounds[judgmentLevel][intervalType]
  

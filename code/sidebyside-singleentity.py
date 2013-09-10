@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from truthutil import *
 import matplotlib.cm as cm
 from argparse import ArgumentParser
-
+import targetentities
 
 DEBUG=False
 
@@ -40,38 +40,7 @@ if not os.path.exists(evalDir+plotDir):
 runfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
 
 
-fullEntityList = [
-    'Aharon_Barak',
-    'Alexander_McCall_Smith',
-    'Alex_Kapranos',
-    'Annie_Laurie_Gaylor',
-    'Basic_Element_(company)',
-    'Basic_Element_(music_group)',
-    'Bill_Coen',
-    'Boris_Berezovsky_(businessman)',
-    'Boris_Berezovsky_(pianist)',
-    'Charlie_Savage',
-    'Darren_Rowse',
-    'Douglas_Carswell',
-    'Frederick_M._Lawrence',
-    'Ikuhisa_Minowa',
-    'James_McCartney',
-    'Jim_Steyer',
-    'Lisa_Bloom',
-    'Lovebug_Starski',
-    'Mario_Garnero',
-    'Masaru_Emoto',
-    'Nassim_Nicholas_Taleb',
-    'Rodrigo_Pimentel',
-    'Roustam_Tariko',
-    'Ruth_Rendell',
-    'Satoshi_Ishii',
-    'Vladimir_Potanin',
-    'William_Cohen',
-    'William_D._Cohan',
-    'William_H._Gates,_Sr',
-    ]
-
+fullEntityList =targetentities.fullEntityListYear1
 if len(args.entity)>0:
     entityList = [args.entity]
 else:

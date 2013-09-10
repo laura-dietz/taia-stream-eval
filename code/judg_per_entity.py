@@ -13,6 +13,7 @@ from matplotlib.dates import DateFormatter, WeekdayLocator, MONDAY
 from truthutil import *
 import matplotlib 
 from utils import *
+import targetentities
 
 DEBUG = False
 
@@ -25,38 +26,7 @@ avgWindow = 7
 
 
 testEntityList = [ 'Mario_Garnero']
-fullEntityList = [
-    'Aharon_Barak',
-    'Alexander_McCall_Smith',
-    'Alex_Kapranos',
-    'Annie_Laurie_Gaylor',
-    'Basic_Element_(company)',
-    'Basic_Element_(music_group)',
-    'Bill_Coen',
-    'Boris_Berezovsky_(businessman)',
-    'Boris_Berezovsky_(pianist)',
-    'Charlie_Savage',
-    'Darren_Rowse',
-    'Douglas_Carswell',
-    'Frederick_M._Lawrence',
-    'Ikuhisa_Minowa',
-    'James_McCartney',
-    'Jim_Steyer',
-    'Lisa_Bloom',
-    'Lovebug_Starski',
-    'Mario_Garnero',
-    'Masaru_Emoto',
-    'Nassim_Nicholas_Taleb',
-    'Rodrigo_Pimentel',
-    'Roustam_Tariko',
-    'Ruth_Rendell',
-    'Satoshi_Ishii',
-    'Vladimir_Potanin',
-    'William_Cohen',
-    'William_D._Cohan',
-    'William_H._Gates,_Sr',
-    ]
-#entityListFromData = np.unique(a['query'])
+fullEntityList =targetentities.fullEntityListYear1
 entityList = testEntityList
 
 
