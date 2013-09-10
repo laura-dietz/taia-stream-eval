@@ -9,6 +9,7 @@ from metrics import *
 import sys
 import string
 import targetentities
+from filenames import COLLAPSED_JUDGMENT_FILE
         
 DEBUG=False        
         
@@ -77,8 +78,9 @@ starts = range(evalTR, evalTRend, epochsPerInterval)
 intervalList = [(start, start + epochsPerInterval) for start in starts]
 #intervalList = [(1325379600,1328058000)]#, (0, 1371517333)]
 
-j= read_judgments(os.path.expanduser('~/kba-evaluation/taia/data/trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'))
-judgments = { (entity, intervalLow): j[np.logical_and(j['query'] == entity, 
+j= read_judgments(COLLAPSED_JUDGMENT_FILE)
+#j= read_judgments(os.path.expanduser('~/kba-evaluation/taia/data/trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'))
+judgments = { (entity, intervalLow): j[np.logical_and(j['query'] == entity,
                      np.logical_and(j['time'] >= intervalLow, j['time'] < intervalUp))]
           for entity in entityList
           for (intervalLow, intervalUp) in intervalList

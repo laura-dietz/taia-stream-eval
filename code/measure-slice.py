@@ -112,7 +112,7 @@ if DUMP_TREC_EVAL :
 
 
 for entity in entityList:
-    print 'fetching annotations for entity',entity
+    #print 'fetching annotations for entity',entity
     
     intervalList = intervalBounds[judgmentLevel][intervalType]
  

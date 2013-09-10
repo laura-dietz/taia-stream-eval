@@ -64,8 +64,6 @@ def loadEntities():
 
     ## init our toy algorithm
     allentities = [rec['target_id'] for rec in filter_topics["targets"]]
-    entities = [entity for entity in allentities if not entity in fullEntityListYear1]
-    #entities.remove(u'http://en.wikipedia.org/wiki/Stuart_Powell_Field')
-    #entities.remove(u'http://en.wikipedia.org/wiki/Fargo-Moorhead_Symphony_Orchestra')
-    #entities.remove(u'http://en.wikipedia.org/wiki/Corn_Belt_Power_Cooperative')
+    # filter out year 1 entities
+    entities = [entity for entity in allentities if not any(map(entity.endswith, fullEntityListYear1))]
     return entities

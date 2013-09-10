@@ -8,9 +8,10 @@ import os.path
 import numpy as np
 from utils import *
 import targetentities
+from filenames import COLLAPSED_JUDGMENT_FILE, evalTR, evalTRend
 
 #COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'  # year 1
-COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-07-08.filter-run.txt' # year 2
+#COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-07-08.filter-run.txt' # year 2
 
 
 # A decorator for memoization
@@ -129,10 +130,10 @@ def test():
     fullEntityList =targetentities.fullEntityListYear1
 
     for entity in fullEntityList:
-        #evalTR = 1325376000 # year 1
-        #evalTRend = 1338508800  # year 1
-        evalTR = 1330559999000  # year 2
-        evalTRend = 1360368000  # year 2
+        ##evalTR = 1325376000 # year 1
+        ##evalTRend = 1338508800  # year 1
+        #evalTR = 1330559999000  # year 2
+        #evalTRend = 1360368000  # year 2
 
         intervalList = [(evalTR, evalTRend)]
 
