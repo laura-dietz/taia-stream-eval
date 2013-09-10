@@ -1,15 +1,17 @@
 epochsPerWeek = int(6.048E5)
 epochsPerDay = 86400
-epochsPerInterval = epochsPerWeek
-# evalTR = 1325376000  # this is the old eval time range, Jan 1st
-evalTR = 1326334731 # this is the new eval time range, J1
-evalTRend = 1338508800
+
+
+## evalTR = 1325376000  # this is the old eval time range, Jan 1st
+#evalTR = 1326334731 # this is the new eval time range, J1
+#evalTRend = 1338508800
+from filenames import evalTR, evalTRend
 
 def epochsToDate(d):
     return (d - evalTR) / epochsPerDay
 
 weekStarts = range(evalTR, evalTRend, epochsPerWeek)
-dayStarts  = range(evalTR, evalTRend, epochsPerDay)
+dayStarts = range(evalTR, evalTRend, epochsPerDay)
 allStarts = [evalTR]
 
 def intervalRange(epochsPerInterval):

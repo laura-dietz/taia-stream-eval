@@ -12,6 +12,7 @@ from argparse import ArgumentParser
 from utils import correctWeighting
 import targetentities
 
+import filenames
 
 evalDir = '~/kba-evaluation/taia/data/intervals/'
 plotDir = 'perf-over-time/'
@@ -33,7 +34,7 @@ if not os.path.exists(evalDir+plotDir):
 print "writing plots to ",(evalDir+plotDir)
 
 
-metrics =  ['correctedAUC','MAP','nDCG@R','Prec@R','numPosPredictions']
+metrics =  ['MAP', 'nDCG@R', 'Prec@R', 'numPosPredictions']
 
 
 weekRunfiles = [(evalDir)+file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
@@ -69,13 +70,16 @@ allIntervalRunfiles = {'all':allRunfiles, 'week':weekRunfiles, 'day':dayRunfiles
 
 fig = plt.figure()
 
-allteams = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang', 'uiucGSLIS']
+allteams = filenames.ALLTEAMS
 teamColors={team:cm.hsv(1. * i/len(allteams),1) for i,team in enumerate(np.unique(allteams))}
 
 print teamColors
 
 def teamColor(team):
-    return teamColors[team]    
+    if team in teamColors:
+        return teamColors[team]
+    else:
+        cm.hsv(0.0, 0)
 
 teamss=[]
 
