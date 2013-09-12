@@ -116,3 +116,6 @@ def ndcgREval(data, gt, gf):
     norm = dcg(ideal[:(gt)][:len(data)])
     if(norm == 0): print('norm=0 in ndcgREval')
     return dcgScore / norm
+
+
+metricsMap = {'nDCG@R': ndcgREval,'Prec@R': precREval, 'MAP':mapEval}

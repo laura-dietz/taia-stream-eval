@@ -13,8 +13,7 @@ from filenames import COLLAPSED_JUDGMENT_FILE
         
 DEBUG=False        
         
-metrics = {
-'nDCG@R': ndcgREval,'Prec@R': precREval, 'MAP':mapEval}
+#metrics = metricsMap
         
         
 entry_dtype = np.dtype([('docid', '50a'), ('query', '50a'),

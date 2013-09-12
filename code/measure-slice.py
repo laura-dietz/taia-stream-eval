@@ -174,7 +174,8 @@ for entity in entityList:
 
         if numPos > 0:
             if len(slice) > 0:
-                for metricname, metric in metrics.items():
+                for metricname in metrics:
+                    metric = metricsMap[metricname]
                     score = metric(unjudgedAsNegSlice, numPos, numNeg)
                     records.append(
                         createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, score))

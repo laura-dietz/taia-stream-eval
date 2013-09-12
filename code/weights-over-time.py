@@ -113,7 +113,7 @@ def createWeightPlot(prefix, entityList, title):
         plt.ylabel('weights')
         plt.xlabel('ETR days')
 
-        plt.xlim(0, 124)
+        plt.xlim(0, filenames.MAX_DAYS)
         figfile = "%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,'weights', judgmentLevelToStr(judgmentLevel), correctedToStr())
         print "saving to... ",figfile
         plt.savefig(figfile, bbox_inches='tight')

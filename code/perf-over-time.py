@@ -34,7 +34,7 @@ if not os.path.exists(evalDir+plotDir):
 print "writing plots to ",(evalDir+plotDir)
 
 
-metrics =  ['MAP', 'nDCG@R', 'Prec@R', 'numPosPredictions']
+metrics =  filenames.METRICS
 
 
 weekRunfiles = [(evalDir)+file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
@@ -161,7 +161,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
             plt.ylabel(renameMetric(metric))
             plt.xlabel('ETR days')
 
-        #plt.xlim(0, 110)
+        plt.xlim(0, filenames.MAX_DAYS)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()

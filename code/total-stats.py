@@ -31,7 +31,7 @@ print "writing tables to ",(evalDir+tableDir)
 print "CORRECTED ", CORRECTED, "judgmentLevel",judgmentLevel
 
 
-metrics =  ['correctedAUC','MAP','nDCG@R','Prec@R','numPosPredictions']
+metrics =  filenames.METRICS
 
 weekRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
 dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
@@ -73,7 +73,7 @@ def computePerformance():
                                   'day':  numPosIntervals(judgmentLevel, entity, 'day')} 
     
              for metric in metrics:   
-                data = df[np.logical_and(df['query']==entity, 
+                data = df[np.logical_and(df['query'] == entity,
                                          np.logical_and(df['metric']==metric, df['judgmentLevel']==judgmentLevel))]
                 
                 if len(data)>0:

@@ -36,7 +36,7 @@ CORRECTED = args.weighted
 evalDir = args.dir
 
 #CORRECTED=True
-metrics =  ['correctedAUC','MAP','nDCG@R','Prec@R','numPosPredictions']
+metrics =  filenames.METRICS
 
 #intervalList = [(start, start + epochsPerInterval) for start in starts]
 #intervalList = [(1325379600,1328058000)]#, (0, 1371517333)]
@@ -180,7 +180,7 @@ def createTruthPlot(prefix,intervalRunfiles, metric,entityList):
             plt.xlabel('ETR days')
 
         #plt.gca().autoscale_view(tight=True, scalex=True, scaley=False)
-        plt.xlim(0, 124)
+        plt.xlim(0, filenames.MAX_DAYS)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()

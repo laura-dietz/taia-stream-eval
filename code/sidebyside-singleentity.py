@@ -57,7 +57,7 @@ def correctedToStrs(CORRECTED):
 allteams = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang', 'uiucGSLIS']
 teamColors={team:cm.hsv(1. * i/len(allteams),1) for i,team in enumerate(np.unique(allteams))}
 
-for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
+for metric in ['MAP','nDCG@R','Prec@R']:
    intervalType ='day'
     
    for entity in entityList:
@@ -96,7 +96,7 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
                 weightedValues = uniformWeighting if not CORRECTED else correctedWeighting
 
                 plt.scatter(epochsToDate(data['intervalLow']),weightedValues, c=teamColors[team], alpha=0.5)
-                plt.xlim(0,110)
+                plt.xlim(0,filenames.MAX_DAYS)
                 
                 window = np.ones(int(4))/float(4)
                 intervalData = np.convolve(weightedValues, window, 'same')
@@ -109,7 +109,7 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
         plot(data2, posData2, False, team2, metric)
         plt.ylabel(renameMetric(metric))
         plt.xlabel('ETR days')
-        plt.xlim(0, 110)
+        plt.xlim(0, filenames.MAX_DAYS)
         plt.title( correctedToStrs(False))
 
         fig.add_subplot(1,2,2)
@@ -117,7 +117,7 @@ for metric in ['MAP','correctedAUC','nDCG@R','Prec@R']:
         plot(data2, posData2, True,team2, metric)
         plt.ylabel(renameMetric(metric))
         plt.xlabel('ETR days')
-        plt.xlim(0, 110)
+        plt.xlim(0, filenames.MAX_DAYS)
         plt.title( correctedToStrs(True))
         
         fig.subplots_adjust(hspace=0.5, wspace=0.5)

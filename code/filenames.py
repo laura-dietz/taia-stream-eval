@@ -1,5 +1,5 @@
 import os.path
-
+import math
 
 # ----- year 1 ---------
 #COLLAPSED_JUDGMENT_FILE =os.path.expanduser('~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt')  # year 1
@@ -9,6 +9,7 @@ import os.path
 #evalTRend = 1338508800  # year 1
 #ALLTEAMS = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang', 'uiucGSLIS']
 
+#MAX_DAYS = 110
 
 # ----- year 2 ------
 
@@ -20,3 +21,7 @@ evalTR =    1330559999   # year 2
 evalTRend = 1360368000  # year 2
 
 ALLTEAMS = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang', 'uiucGSLIS']
+
+METRICS =  ['MAP','nDCG@R','Prec@R','numPosPredictions']
+
+MAX_DAYS =  math.ceil((evalTRend - evalTR)/60*60*24)
