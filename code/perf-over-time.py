@@ -42,7 +42,7 @@ dayRunfiles = [(evalDir)+file for file in os.listdir(os.path.expanduser(evalDir)
 allRunfiles = [(evalDir)+file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
 testEntityList = [ 'Alex_Kapranos' ,'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 
 entityList = fullEntityList
 
@@ -109,7 +109,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                         for entity in entityList
                         ]
 
-                    print 'allvalues', allvalues
+                    # print 'allvalues', allvalues
 
                     values = [data[data['query'] == entity]['value'][0]
                         if np.count_nonzero(data['query'] == entity) > 0 else 0.0
@@ -125,7 +125,8 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                         , posTruths(judgmentLevel, entity)
                         ,numPosIntervals(judgmentLevel, entity, intervalType))
                         if np.count_nonzero(data['query']==entity)>0 else 0.0 
-                        for entity in entityList 
+                        if np.count_nonzero(data['query']==entity)>0 else 0.0
+                        for entity in entityList
                         if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
                         ]
 
