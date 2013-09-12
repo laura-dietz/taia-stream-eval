@@ -40,7 +40,7 @@ if not os.path.exists(evalDir+plotDir):
 runfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
 
 
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 if len(args.entity)>0:
     entityList = [args.entity]
 else:

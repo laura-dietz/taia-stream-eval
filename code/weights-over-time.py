@@ -31,7 +31,7 @@ print "writing plots to ",(evalDir+plotDir)
 
 
 testEntityList = [ 'Alex_Kapranos' ,'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 entityList = fullEntityList
 
 

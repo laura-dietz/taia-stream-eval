@@ -26,7 +26,7 @@ avgWindow = 7
 
 
 testEntityList = [ 'Mario_Garnero']
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 entityList = testEntityList
 
 

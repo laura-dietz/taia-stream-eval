@@ -37,7 +37,7 @@ weekRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.pat
 dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
 allRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 entityList = fullEntityList
 
 eval_dtype = np.dtype([('team','50a'),('runname','50a'),('query','50a'),('intervalLow','d4'),('intervalUp','d4'),('unjudged','50a'),('judgmentLevel','d4'),('metric','50a'),('value','f4')])

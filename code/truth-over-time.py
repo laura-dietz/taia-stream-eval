@@ -47,7 +47,7 @@ dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path
 allRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
 testEntityList = [ 'Alex_Kapranos' ,'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
-fullEntityList =targetentities.fullEntityListYear1
+fullEntityList =targetentities.loadEntities()
 entityList = fullEntityList
 if DEBUG: entityList = fullEntityList
 
