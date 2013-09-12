@@ -145,3 +145,6 @@ def loadEntities():
 
 
 
+def shortname(entity):
+    short = entity[entity.rindex("/")+1:]
+    return short

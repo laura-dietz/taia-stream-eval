@@ -113,7 +113,7 @@ def createWeightPlot(prefix, entityList, title):
         plt.ylabel('weights')
         plt.xlabel('ETR days')
 
-        plt.xlim(0, filenames.MAX_DAYS)
+        #plt.xlim(0, filenames.MAX_DAYS)
         figfile = "%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,'weights', judgmentLevelToStr(judgmentLevel), correctedToStr())
         print "saving to... ",figfile
         plt.savefig(figfile, bbox_inches='tight')
@@ -123,7 +123,7 @@ def createWeightPlot(prefix, entityList, title):
 def plotWeights():
     createWeightPlot(evalDir+plotDir+"all_weights__", entityList, 'all')
     for entity in entityList:
-        createWeightPlot(evalDir+plotDir+entity+"__weights__", [entity], entity)
+        createWeightPlot(evalDir+plotDir+targetentities.shortname(entity)+"__weights__", [entity], entity)
 
 def savePlottedValues(plottedValues):
     tableFile = "%s_weights_over_time_%s.tsv"%(evalDir+plotDir, judgmentLevelToStr(judgmentLevel))

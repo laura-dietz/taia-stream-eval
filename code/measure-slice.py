@@ -154,25 +154,25 @@ for entity in entityList:
         unjudgedAsNegSlice = judgedPosSlice
         numNeg = len(slice) - numPos
         if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
-
-        records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
-        records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', numNeg))
-        records.append(
-            createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', len(slice)))
-        records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
-                                        'numPosPredictions', sum(judgedPosSlice)))
-        records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
-                                        posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
-        records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
-                                        'posTruthsTotal', posTruths(judgmentLevel, entity)))
-        records.append(createEvalRecord(entity,
-                                        intervalLow,
-                                        intervalUp, '',
-                                        judgmentLevel,
-                                        'numPosIntervals',
-                                        numPosIntervals(judgmentLevel, entity, intervalType)))
-
         if numPos > 0:
+
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', numNeg))
+            records.append(
+                createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', len(slice)))
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                            'numPosPredictions', sum(judgedPosSlice)))
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
+                                            posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                            'posTruthsTotal', posTruths(judgmentLevel, entity)))
+            records.append(createEvalRecord(entity,
+                                            intervalLow,
+                                            intervalUp, '',
+                                            judgmentLevel,
+                                            'numPosIntervals',
+                                            numPosIntervals(judgmentLevel, entity, intervalType)))
+
             if len(slice) > 0:
                 for metricname in metrics:
                     metric = metricsMap[metricname]

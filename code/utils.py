@@ -1,8 +1,8 @@
 import filenames
 
 
-epochsPerWeek = int(6.048E5)
-epochsPerDay = 86400
+epochsPerWeek = filenames.epochsPerWeek
+epochsPerDay = filenames.epochsPerDay
 
 
 ## evalTR = 1325376000  # this is the old eval time range, Jan 1st

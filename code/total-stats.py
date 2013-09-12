@@ -169,7 +169,7 @@ def entityPerformance(entity, metric):
     if(sortedPerformancePerEntity):
         for ((team,run),(v1,v2,v3)) in sortedPerformancePerEntity: print team,run,'\t',v1,v2,v3 
     
-        tableFile="%s%s_entity_stats_%s_%s_%s.tsv"%(evalDir+entityTableDir,metric,entity,judgmentLevelToStr(judgmentLevel), correctedToStr())
+        tableFile="%s%s_entity_stats_%s_%s_%s.tsv"%(evalDir+entityTableDir,metric,targetentities.shortname(entity),judgmentLevelToStr(judgmentLevel), correctedToStr())
         table = [(k1,k2,v1,v2,v3) for ((k1,k2),(v1,v2,v3)) in sortedPerformancePerEntity]
         np.savetxt(tableFile, table,fmt='%s\t%s\t%s\t%s\t%s')
         print tableFile
