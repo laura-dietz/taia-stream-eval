@@ -104,9 +104,15 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                 data = df[np.logical_and(df['intervalLow']==intervalLow, 
                                          np.logical_and(df['metric']==metric, df['judgmentLevel']==judgmentLevel))]
                 
-                if len(data)>0:
-                    values = [data[data['query']==entity]['value'][0] 
-                        if np.count_nonzero(data['query']==entity)>0 else 0.0 
+                if len(data) > 0:
+                    allvalues = [data[data['query'] == entity]['value']
+                        for entity in entityList
+                        ]
+
+                    print 'allvalues', allvalues
+
+                    values = [data[data['query'] == entity]['value'][0]
+                        if np.count_nonzero(data['query'] == entity) > 0 else 0.0
                         for entity in entityList 
                         if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
                         ]
@@ -132,6 +138,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                     
                     correctedWeighting = correctedValues
                     weightedValues = uniformWeighting if not CORRECTED else correctedWeighting
+                    print 'weightedValues',weightedValues
                     #print 'uniform =',np.mean(uniformWeighting), ' corrected=',np.mean(correctedWeighting),' choosing ',np.mean(weightedValues)
                     records.append(createStatsRecord(team, runname, intervalLow, unjudgedAs, judgmentLevel, metric, np.mean(weightedValues), np.std(weightedValues), intervalType))
                     ys.append(np.mean(weightedValues))
@@ -141,7 +148,9 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
             if(ys) and intervalType=='all':
                 xs.append(evalTRend)
                 ys.append(ys[-1])
-        
+
+            print 'xs',xs
+            print 'ys', ys
             plotcolor = teamColors[team]
             plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color=plotcolor, alpha=0.5, ls='-',marker='.')
             if args.subplot and idx==0:
@@ -151,7 +160,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
             plt.ylabel(renameMetric(metric))
             plt.xlabel('ETR days')
 
-        plt.xlim(0, 110)
+        #plt.xlim(0, 110)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()

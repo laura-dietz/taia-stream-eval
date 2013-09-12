@@ -54,6 +54,39 @@ fullEntityListYear1 = [
     'William_H._Gates,_Sr',
 ]
 
+#
+#entity does not have judgments  http://en.wikipedia.org/wiki/Stuart_Powell_Field
+#entity does not have judgments  http://en.wikipedia.org/wiki/Corn_Belt_Power_Cooperative
+#entity does not have judgments  http://en.wikipedia.org/wiki/Fargo-Moorhead_Symphony_Orchestra
+#entity does not have judgments  http://en.wikipedia.org/wiki/John_D._Odegard_School_of_Aerospace_Sciences
+#entity does not have judgments  http://en.wikipedia.org/wiki/Star_Lite_Motel
+#entity does not have judgments  http://en.wikipedia.org/wiki/Elysian_Charter_School
+#entity does not have judgments  http://en.wikipedia.org/wiki/Stevens_Cooperative_School
+#entity does not have judgments  http://en.wikipedia.org/wiki/Lewis_and_Clark_Landing
+#entity does not have judgments  http://en.wikipedia.org/wiki/Appleton_Museum_of_Art
+#entity does not have judgments  http://en.wikipedia.org/wiki/Don_Garlits_Museum_of_Drag_Racing
+#entity does not have judgments  http://en.wikipedia.org/wiki/Eighth_Street_Elementary_School
+#entity does not have judgments  http://en.wikipedia.org/wiki/Marion_Technical_Institute
+#entity does not have judgments  http://en.wikipedia.org/wiki/The_Ritz_Apartment_(Ocala,_Florida)
+#entity does not have judgments  http://en.wikipedia.org/wiki/Great_American_Brass_Band_Festival
+#entity does not have judgments  http://en.wikipedia.org/wiki/Hoboken_Volunteer_Ambulance_Corps
+#entity does not have judgments  http://en.wikipedia.org/wiki/Agroindustrial_Pomalca
+#entity does not have judgments  http://en.wikipedia.org/wiki/Intergroup_Financial_Services
+#entity does not have judgments  https://twitter.com/GandBcoffee
+#entity does not have judgments  https://twitter.com/evvnt
+#entity does not have judgments  https://twitter.com/AlexJoHamilton
+#entity does not have judgments  https://twitter.com/danvillekyengr
+#entity does not have judgments  http://en.wikipedia.org/wiki/Carey_McWilliams_(marksman)
+#entity does not have judgments  http://en.wikipedia.org/wiki/Fargo_Moorhead_Derby_Girls
+#entity does not have judgments  http://en.wikipedia.org/wiki/Ken_Fowler
+#entity does not have judgments  http://en.wikipedia.org/wiki/Chiara_Nappi
+#entity does not have judgments  http://en.wikipedia.org/wiki/Henry_Gutierrez
+#entity does not have judgments  http://en.wikipedia.org/wiki/Klaus_Grutzka
+#entity does not have judgments  http://en.wikipedia.org/wiki/William_H._Miller_(writer)
+#entity does not have judgments  http://en.wikipedia.org/wiki/Chuck_Pankow
+#entity does not have judgments  http://en.wikipedia.org/wiki/Lorenzo_Williams_(basketball)
+#entity does not have judgments  https://twitter.com/redmondmusic
+#entity does not have judgments  https://twitter.com/MissMarcel
 unjudgedEntityListYear2 = [
     'http://en.wikipedia.org/wiki/Stuart_Powell_Field'
     , 'http://en.wikipedia.org/wiki/Corn_Belt_Power_Cooperative'
@@ -104,7 +137,7 @@ def loadEntities():
 
     # filter out year 1 entities
     entities = [entity for entity in allentities if not any(map(entity.endswith, fullEntityListYear1))]
-    #return entities # uncomment this line, if you want to include entities without judgments.
+    #return entities  # uncomment this line, if you want to include entities without judgments.
 
     # filter out entities without any positive judgments
     judgedEntities = [entity for entity in entities if not entity in unjudgedEntityListYear2]
