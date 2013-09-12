@@ -21,6 +21,7 @@ from truthutil import *
 from argparse import ArgumentParser
 from targetentities import *
 import csv
+import tempfile
 
 
 DEBUG = False
@@ -52,19 +53,30 @@ eval_dtype = np.dtype(
      ('unjudged', '50a'), ('judgmentLevel', 'd4'), ('metric', '50a'), ('value', 'f4')])
 
 
-def read_predictions(fname, entity):
-    print "reading",fname, 'filtering for entity ', entity
-    lineList = []
-    annotation_file = csv.reader(fname, delimiter='\t')
-    for line in annotation_file:
-        if len(line) > 4 and line[3] == entity:
-            lineList.append(tuple(line[1:5]))
+class Annotations(object):
+    """ represents a set of annotations that have been sorted by entity.
+        We do this on disk to keep the memory footprint down. """
+    def __init__(self, fname):
+        print 'generating prediction cache for', fname.filename
+        self.entity_files = {}
 
-    a = np.rec.fromrecords(lineList, dtype=entry_dtype)
-    print 'read %d predictions' % len(a)
-    times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
-    return recfunctions.append_fields(a, 'time', times)
+        annotation_file = csv.reader(fname, delimiter='\t')
+        for line in annotation_file:
+            if len(line) < 4: continue
+            entity = line[3]
+            if entity not in self.entity_files:
+                 self.entity_files[entity] = tempfile.NamedTemporaryFile(prefix='kba', delete=True)
+            self.entity_files[entity].write('\t'.join(line)+'\n')
 
+        print 'indexed predictions for %d entities' % (len(self.entity_files))
+
+    def get_predictions(self, entity):
+        f = self.entity_files[entity]
+        f.seek(0)
+        a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1,2,3,4])
+        print 'read %d predictions' % len(a)
+        times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
+        return recfunctions.append_fields(a, 'time', times)
 
 def read_judgments(fname):
     a = np.genfromtxt(fname, dtype=judg_dtype, usecols=[2, 3, 5])
@@ -72,9 +84,9 @@ def read_judgments(fname):
     return recfunctions.append_fields(a, 'time', times)
 
 
-def read_zipped_predictions(fname, entity):
+def read_zipped_predictions(fname):
     with gzip.open(fname) as f:
-        return read_predictions(f, entity)
+        return Annotations(f)
 
 
 def readPredictionsHeader(fname):
@@ -111,10 +123,12 @@ if DUMP_TREC_EVAL:
     runOutputFilename = "%s-%s.run" % (os.path.expanduser(runFile), intervalType)
     runOutputFile = open(runOutputFilename, 'w')
 
+annotations = read_zipped_predictions(os.path.expanduser(runFile))
+
 for entity in entityList:
     #print 'fetching annotations for entity',entity
 
-    a = read_zipped_predictions(os.path.expanduser(runFile), entity)
+    a = annotations.get_predictions(entity)
 
     intervalList = intervalBounds[judgmentLevel][intervalType]
 
