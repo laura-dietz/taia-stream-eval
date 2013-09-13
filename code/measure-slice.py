@@ -165,12 +165,12 @@ for entity in entityList:
 
 
         else:
-            judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
             # segment data
             slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
             if (len(slice) > 0):
             # sort by confidence and revert (highest first)
-                slice = np.sort(slice, order='confidence')[::-1]
+                slice = np.sort(slice, order=['confidence'])[::-1]
+
 
             if DUMP_TREC_EVAL:
                 for i, row in enumerate(slice):
@@ -179,6 +179,7 @@ for entity in entityList:
                     runOutputFile.write(
                         "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
 
+            judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
             unjudgedAsNegSlice = judgedPosSlice
             numNeg = len(slice) - numPos
             if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
