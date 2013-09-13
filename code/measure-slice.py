@@ -72,7 +72,9 @@ class Annotations(object):
 
     def get_predictions(self, entity):
         if entity not in self.entity_files:
-            return np.array([], dtype=entry_dtype)
+            fakeArray = np.array([], dtype=entry_dtype)
+            recfunctions.append_fields(fakeArray, 'time', [])
+            return fakeArray
         f = self.entity_files[entity]
         f.seek(0)
         a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1,2,3,4])
