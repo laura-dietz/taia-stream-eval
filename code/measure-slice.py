@@ -71,16 +71,15 @@ class Annotations(object):
 
         print 'indexed predictions for %d entities' % (len(self.entity_files))
 
-
-def get_predictions(self, entity):
-    if entity not in self.entity_files:
-        return None
-    f = self.entity_files[entity]
-    f.seek(0)
-    a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1, 2, 3, 4])
-    print 'read %d predictions' % len(a)
-    times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
-    return recfunctions.append_fields(a, 'time', times)
+    def get_predictions(self, entity):
+        if entity not in self.entity_files:
+            return None
+        f = self.entity_files[entity]
+        f.seek(0)
+        a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1, 2, 3, 4])
+        print 'read %d predictions' % len(a)
+        times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
+        return recfunctions.append_fields(a, 'time', times)
 
 
 def read_judgments(fname):
