@@ -56,8 +56,9 @@ eval_dtype = np.dtype(
 class Annotations(object):
     """ represents a set of annotations that have been sorted by entity.
         We do this on disk to keep the memory footprint down. """
+
     def __init__(self, fname):
-        print 'generating prediction cache for', fname.filename
+        #print 'generating prediction cache for', fname.filename
         self.entity_files = {}
 
         annotation_file = csv.reader(fname, delimiter='\t')
@@ -65,22 +66,22 @@ class Annotations(object):
             if len(line) < 4: continue
             entity = line[3]
             if entity not in self.entity_files:
-                 self.entity_files[entity] = tempfile.NamedTemporaryFile(prefix='kba', delete=True)
-            self.entity_files[entity].write('\t'.join(line)+'\n')
+                self.entity_files[entity] = tempfile.NamedTemporaryFile(prefix='kba', delete=True)
+            self.entity_files[entity].write('\t'.join(line) + '\n')
 
         print 'indexed predictions for %d entities' % (len(self.entity_files))
 
-    def get_predictions(self, entity):
-        if entity not in self.entity_files:
-            fakeArray = np.array([], dtype=entry_dtype)
-            recfunctions.append_fields(fakeArray, 'time', [])
-            return fakeArray
-        f = self.entity_files[entity]
-        f.seek(0)
-        a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1,2,3,4])
-        print 'read %d predictions' % len(a)
-        times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
-        return recfunctions.append_fields(a, 'time', times)
+
+def get_predictions(self, entity):
+    if entity not in self.entity_files:
+        return None
+    f = self.entity_files[entity]
+    f.seek(0)
+    a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1, 2, 3, 4])
+    print 'read %d predictions' % len(a)
+    times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
+    return recfunctions.append_fields(a, 'time', times)
+
 
 def read_judgments(fname):
     a = np.genfromtxt(fname, dtype=judg_dtype, usecols=[2, 3, 5])
@@ -105,7 +106,6 @@ def readPredictionsHeader(fname):
 team, runname = readPredictionsHeader(os.path.expanduser(runFile))
 print team, runname
 
-
 testEntityList = ['Boris_Berezovsky_(businessman)', 'Boris_Berezovsky_(pianist)', 'Alex_Kapranos', 'James_McCartney']
 
 entityList = loadEntities()
@@ -127,45 +127,28 @@ if DUMP_TREC_EVAL:
     runOutputFilename = "%s-%s.run" % (os.path.expanduser(runFile), intervalType)
     runOutputFile = open(runOutputFilename, 'w')
 
+print 'measuring slices for ', os.path.expanduser(runFile)
 annotations = read_zipped_predictions(os.path.expanduser(runFile))
 
 for entity in entityList:
     #print 'fetching annotations for entity',entity
 
     a = annotations.get_predictions(entity)
-
     intervalList = intervalBounds[judgmentLevel][intervalType]
 
     for (i, (intervalLow, intervalUp)) in enumerate(intervalList):
-        # segment data 
-        slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
-        if (len(slice) > 0):
-        # sort by confidence and revert (highest first)
-            slice = np.sort(slice, order='confidence')[::-1]
-
         posGroundTruth = trueDocs(judgmentLevel, entity, intervalLow, intervalUp)
 
         numPos = len(posGroundTruth)
-        judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
 
-        if DUMP_TREC_EVAL:
-            for i, row in enumerate(slice):
-                score = float(row['confidence'])
-                rank = i + 1
-                runOutputFile.write(
-                    "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
-
-        unjudgedAsNegSlice = judgedPosSlice
-        numNeg = len(slice) - numPos
-        if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
-        if numPos > 0:
-
+        # a is None if there are no judgments for this entity in this run
+        if a is None and numPos > 0:
             records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', numNeg))
+            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', 0))
             records.append(
-                createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', len(slice)))
+                createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', 0))
             records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
-                                            'numPosPredictions', sum(judgedPosSlice)))
+                                            'numPosPredictions', 0))
             records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
                                             posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
             records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
@@ -177,16 +160,58 @@ for entity in entityList:
                                             'numPosIntervals',
                                             numPosIntervals(judgmentLevel, entity, intervalType)))
 
-            if len(slice) > 0:
-                for metricname in metrics:
-                    metric = metricsMap[metricname]
-                    score = metric(unjudgedAsNegSlice, numPos, numNeg)
-                    records.append(
-                        createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, score))
-            else:
-                for metricname in metrics:
-                    records.append(
-                        createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, 0.0))
+            for metricname in metrics:
+                records.append(
+                    createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, 0.0))
+
+
+        else:
+            judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
+            # segment data
+            slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
+            if (len(slice) > 0):
+            # sort by confidence and revert (highest first)
+                slice = np.sort(slice, order='confidence')[::-1]
+
+            if DUMP_TREC_EVAL:
+                for i, row in enumerate(slice):
+                    score = float(row['confidence'])
+                    rank = i + 1
+                    runOutputFile.write(
+                        "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
+
+            unjudgedAsNegSlice = judgedPosSlice
+            numNeg = len(slice) - numPos
+            if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
+            if numPos > 0:
+
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', numNeg))
+                records.append(
+                    createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', len(slice)))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                                'numPosPredictions', sum(judgedPosSlice)))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
+                                                posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                                'posTruthsTotal', posTruths(judgmentLevel, entity)))
+                records.append(createEvalRecord(entity,
+                                                intervalLow,
+                                                intervalUp, '',
+                                                judgmentLevel,
+                                                'numPosIntervals',
+                                                numPosIntervals(judgmentLevel, entity, intervalType)))
+
+                if len(slice) > 0:
+                    for metricname in metrics:
+                        metric = metricsMap[metricname]
+                        score = metric(unjudgedAsNegSlice, numPos, numNeg)
+                        records.append(
+                            createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, score))
+                else:
+                    for metricname in metrics:
+                        records.append(
+                            createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, 0.0))
 
 print runFile
 
