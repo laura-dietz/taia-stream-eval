@@ -140,50 +140,50 @@ for entity in entityList:
 
         numPos = len(posGroundTruth)
 
-        # a is None if there are no judgments for this entity in this run
-        if a is None and numPos > 0:
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', 0))
-            records.append(
-                createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', 0))
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
-                                            'numPosPredictions', 0))
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
-                                            posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
-            records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
-                                            'posTruthsTotal', posTruths(judgmentLevel, entity)))
-            records.append(createEvalRecord(entity,
-                                            intervalLow,
-                                            intervalUp, '',
-                                            judgmentLevel,
-                                            'numPosIntervals',
-                                            numPosIntervals(judgmentLevel, entity, intervalType)))
-
-            for metricname in metrics:
+        if numPos > 0:
+            # a is None if there are no judgments for this entity in this run
+            if a is None:
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', 0))
                 records.append(
-                    createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, 0.0))
+                    createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPredictions', 0))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                                'numPosPredictions', 0))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'posTruthsInterval',
+                                                posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)))
+                records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel,
+                                                'posTruthsTotal', posTruths(judgmentLevel, entity)))
+                records.append(createEvalRecord(entity,
+                                                intervalLow,
+                                                intervalUp, '',
+                                                judgmentLevel,
+                                                'numPosIntervals',
+                                                numPosIntervals(judgmentLevel, entity, intervalType)))
+
+                for metricname in metrics:
+                    records.append(
+                        createEvalRecord(entity, intervalLow, intervalUp, 'neg', judgmentLevel, metricname, 0.0))
 
 
-        else:
-            # segment data
-            slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
-            if (len(slice) > 0):
-            # sort by confidence and revert (highest first)
-                slice = np.sort(slice, order=['confidence'])[::-1]
+            else: # a is not None
+                # segment data
+                slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
+                if (len(slice) > 0):
+                # sort by confidence and revert (highest first)
+                    slice = np.sort(slice, order=['confidence'])[::-1]
 
 
-            if DUMP_TREC_EVAL:
-                for i, row in enumerate(slice):
-                    score = float(row['confidence'])
-                    rank = i + 1
-                    runOutputFile.write(
-                        "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
+                if DUMP_TREC_EVAL:
+                    for i, row in enumerate(slice):
+                        score = float(row['confidence'])
+                        rank = i + 1
+                        runOutputFile.write(
+                            "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
 
-            judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
-            unjudgedAsNegSlice = judgedPosSlice
-            numNeg = len(slice) - numPos
-            if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
-            if numPos > 0:
+                judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
+                unjudgedAsNegSlice = judgedPosSlice
+                numNeg = len(slice) - numPos
+                if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)
 
                 records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numPos', numPos))
                 records.append(createEvalRecord(entity, intervalLow, intervalUp, '', judgmentLevel, 'numNeg', numNeg))
@@ -215,7 +215,8 @@ for entity in entityList:
 
 print runFile
 
-if DUMP_TREC_EVAL: runOutputFile.close()
+if DUMP_TREC_EVAL:
+    runOutputFile.close()
 
 df = np.hstack(records)
 
