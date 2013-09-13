@@ -72,7 +72,7 @@ class Annotations(object):
 
     def get_predictions(self, entity):
         if entity not in self.entity_files:
-            return []
+            return np.array([], dtype=entry_dtype)
         f = self.entity_files[entity]
         f.seek(0)
         a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1,2,3,4])
