@@ -77,7 +77,7 @@ class Annotations(object):
         f = self.entity_files[entity]
         f.seek(0)
         a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1, 2, 3, 4])
-        print 'read %d predictions' % len(a)
+        #print 'read %d predictions' % len(a)
         times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
         return recfunctions.append_fields(a, 'time', times)
 
