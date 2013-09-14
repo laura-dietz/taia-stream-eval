@@ -115,7 +115,7 @@ def singlePlot(entity, judgmentLevel):
                 plt.xlabel('ETR days')
                 plt.title(entity + ' '+judgmentLevelToStr(judgmentLevel))
         
-            plt.xlim(0,filenames.MAX_DAYS)
+            plt.xlim(0,kbaconfig.MAX_DAYS)
             #pl.show()
         #plt.suptitle("numPos %s (page %d)" %(evalFile, page))
             figureFilename="%s_relevant_over_time_entity_%s.pdf"%(os.path.expanduser(targetDir),entity)

@@ -12,7 +12,7 @@ import os.path
 import numpy as np
 from numpy.lib import recfunctions
 from utils import *
-from filenames import *
+from kbaconfig import *
 
 
 

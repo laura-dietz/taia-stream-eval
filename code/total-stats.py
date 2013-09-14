@@ -31,7 +31,7 @@ print "writing tables to ",(evalDir+tableDir)
 print "CORRECTED ", CORRECTED, "judgmentLevel",judgmentLevel
 
 
-metrics =  filenames.METRICS
+metrics =  kbaconfig.METRICS
 
 weekRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
 dayRunfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]

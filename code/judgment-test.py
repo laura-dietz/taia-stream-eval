@@ -9,7 +9,7 @@ from metrics import *
 import sys
 import string
 import targetentities
-from filenames import COLLAPSED_JUDGMENT_FILE
+from kbaconfig import COLLAPSED_JUDGMENT_FILE
         
 DEBUG=False        
         

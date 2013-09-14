@@ -8,7 +8,7 @@ import os.path
 import numpy as np
 from utils import *
 import targetentities
-from filenames import COLLAPSED_JUDGMENT_FILE, evalTR, evalTRend
+from kbaconfig import COLLAPSED_JUDGMENT_FILE, evalTR, evalTRend
 
 #COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia/data/collapsed-onlypos-trec-kba-ccr-2012-judgments-2012JUN22-final.filter-run.txt'  # year 1
 #COLLAPSED_JUDGMENT_FILE ='~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-07-08.filter-run.txt' # year 2

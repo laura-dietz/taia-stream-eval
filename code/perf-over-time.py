@@ -13,8 +13,7 @@ from truthutil import *
 from argparse import ArgumentParser
 from utils import correctWeighting
 import targetentities
-
-import filenames
+import kbaconfig
 
 evalDir = '~/kba-evaluation/taia/data/intervals/'
 plotDir = 'perf-over-time/'
@@ -36,7 +35,7 @@ if not os.path.exists(evalDir+plotDir):
 print "writing plots to ",(evalDir+plotDir)
 
 
-metrics =  filenames.METRICS
+metrics =  kbaconfig.METRICS
 
 
 weekRunfiles = [(evalDir)+file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
@@ -72,7 +71,7 @@ allIntervalRunfiles = {'all':allRunfiles, 'week':weekRunfiles, 'day':dayRunfiles
 
 fig = plt.figure()
 
-allteams = filenames.ALLTEAMS
+allteams = kbaconfig.ALLTEAMS
 teamColors={team:cm.hsv(1. * i/len(allteams),1) for i,team in enumerate(np.unique(allteams))}
 
 print teamColors
@@ -163,7 +162,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
             plt.ylabel(renameMetric(metric))
             plt.xlabel('ETR days')
 
-        plt.xlim(0, filenames.MAX_DAYS)
+        plt.xlim(0, kbaconfig.MAX_DAYS)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf"%(prefix,intervalType,metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()

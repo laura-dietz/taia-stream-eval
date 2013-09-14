@@ -1,16 +1,16 @@
-import filenames
+import kbaconfig
 
 
-epochsPerWeek = filenames.epochsPerWeek
-epochsPerDay = filenames.epochsPerDay
+epochsPerWeek = kbaconfig.epochsPerWeek
+epochsPerDay = kbaconfig.epochsPerDay
 
 
 ## evalTR = 1325376000  # this is the old eval time range, Jan 1st
 #evalTR = 1326334731 # this is the new eval time range, J1
 #evalTRend = 1338508800
 
-evalTR = filenames.evalTR
-evalTRend = filenames.evalTRend
+evalTR = kbaconfig.evalTR
+evalTRend = kbaconfig.evalTRend
 
 def epochsToDate(d):
     return (d - evalTR) / epochsPerDay

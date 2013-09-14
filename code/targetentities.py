@@ -5,7 +5,7 @@ import json
 import time
 import copy
 import logging
-from filenames import TOPIC_FILE
+from kbaconfig import TOPIC_FILE
 
 #filter_run = {
 #    "$schema": "http://trec-kba.org/schemas/v1.1/filter-run.json",
