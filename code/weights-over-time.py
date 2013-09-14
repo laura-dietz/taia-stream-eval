@@ -134,7 +134,7 @@ def savePlottedValues(plottedValues):
     np.savetxt(tableFile,plottedValues,fmt='%s\t%f\t%s\t%d\t%s\t%f\t%f\t%s')
 
     #np.savetxt(tableFile, table,fmt='%s\t%s\t%s\t%s\t%s')
-    print 'micro stats in table ',tableFile
+    print 'macro stats in table ',tableFile
 
 
 

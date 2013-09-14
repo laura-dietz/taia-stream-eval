@@ -140,14 +140,14 @@ def totalPerformance(metric):
         for runname in allRunnames() 
         for team in teamsForRun(runname)}
     
-    sortedMicroPerformance = [x for x in sorted(macroPerf.iteritems(), key=lambda(key,(v1,v2,v3)):v2, reverse=True)]
-    for ((team,run),(v1,v2,v3)) in sortedMicroPerformance: 
+    sortedMacroPerformance = [x for x in sorted(macroPerf.iteritems(), key=lambda(key,(v1,v2,v3)):v2, reverse=True)]
+    for ((team,run),(v1,v2,v3)) in sortedMacroPerformance:
         print team,run,'\t',v1,v2,v3
 
     tableFile="%s%s_total_stats_%s_%s.tsv"%(evalDir+tableDir,metric,judgmentLevelToStr(judgmentLevel), correctedToStr())
-    table = [(k1,k2,v1,v2,v3) for ((k1,k2),(v1,v2,v3)) in sortedMicroPerformance]
+    table = [(k1,k2,v1,v2,v3) for ((k1,k2),(v1,v2,v3)) in sortedMacroPerformance]
     np.savetxt(tableFile, table,fmt='%s\t%s\t%s\t%s\t%s')
-    print 'micro stats in table ',tableFile
+    print 'macro stats in table ',tableFile
     print tableFile
 
 

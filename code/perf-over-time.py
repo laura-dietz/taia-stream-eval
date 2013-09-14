@@ -140,7 +140,7 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                     
                     correctedWeighting = correctedValues
                     weightedValues = uniformWeighting if not CORRECTED else correctedWeighting
-                    print 'weightedValues',weightedValues
+                    #print 'weightedValues',weightedValues
                     #print 'uniform =',np.mean(uniformWeighting), ' corrected=',np.mean(correctedWeighting),' choosing ',np.mean(weightedValues)
                     records.append(createStatsRecord(team, runname, intervalLow, unjudgedAs, judgmentLevel, metric, np.mean(weightedValues), np.std(weightedValues), intervalType))
                     ys.append(np.mean(weightedValues))
@@ -151,8 +151,8 @@ def createPlot(prefix,intervalRunfiles, metric,entityList):
                 xs.append(evalTRend)
                 ys.append(ys[-1])
 
-            print 'xs',xs
-            print 'ys', ys
+            #print 'xs',xs
+            #print 'ys', ys
             plotcolor = teamColors[team]
             plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color=plotcolor, alpha=0.5, ls='-',marker='.')
             if args.subplot and idx==0:
