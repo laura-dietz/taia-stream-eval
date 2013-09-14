@@ -20,11 +20,13 @@ plotDir = 'sidebyside/'
 
 parser = ArgumentParser()
 parser.add_argument('--judgmentLevel', type=int, help='Judgement level')
-parser.add_argument('--team1', help='Team name of first run')
-parser.add_argument('--run1', help='Name of first comparison run')
-parser.add_argument('--team2', help='Team name of second run')
-parser.add_argument('--run2', help='Name of second comparison run')
-parser.add_argument('--entity',metavar='ENTITY', help='Optional: Entity to evaluate on', default='')
+parser.add_argument('--team1', help='Team name of first run', required = True)
+parser.add_argument('--run1', help='Name of first comparison run', required = True)
+parser.add_argument('--team2', help='Team name of second run', required = True)
+parser.add_argument('--run2', help='Name of second comparison run', required = True)
+parser.add_argument('--file1', help='Name of first comparison run filename (default \"input.$team1-$run1.gz\")', default=None)
+parser.add_argument('--file2', help='Name of second comparison run filename (default \"input.$team2-$run2.gz\")', default=None)
+parser.add_argument('--entity',metavar='ENTITY', help='Optional: Entity to evaluate on', default=None)
 parser.add_argument('-d', '--dir', metavar='DIR', default=evalDir)
 args = parser.parse_args()
 
@@ -33,6 +35,8 @@ run1 = args.run1
 team2 = args.team2
 run2 = args.run2
 judgmentLevel = args.judgmentLevel
+filename1 = args.file1 if args.file1 is not None else 'input.%s-%s.gz'%(team1, run1)
+filename2 = args.file2 if args.file2 is not None else 'input.%s-%s.gz'%(team2, run2)
 print 'using judgmentLevel', judgmentLevel
 
 evalDir = os.path.expanduser(args.dir)
@@ -43,7 +47,7 @@ runfiles = [(os.path.expanduser(evalDir)+file) for file in os.listdir(os.path.ex
 
 
 fullEntityList =targetentities.loadEntities()
-if len(args.entity)>0:
+if args.entity is not None:
     entityList = [args.entity]
 else:
     entityList = fullEntityList
@@ -64,9 +68,8 @@ for metric in ['MAP','nDCG@R','Prec@R']:
     
    for entity in entityList:
 
-        runfile1 = (os.path.expanduser(evalDir)+('input.%s-%s.gz-eval-%s.tsv'%(team1,run1,intervalType)))
-        
-        runfile2 = (os.path.expanduser(evalDir)+('input.%s-%s.gz-eval-%s.tsv'%(team2,run2,intervalType)))
+        runfile1 = (os.path.expanduser(evalDir)+('%s-eval-%s.tsv'%(filename1,intervalType)))
+        runfile2 = (os.path.expanduser(evalDir)+('%s-eval-%s.tsv'%(filename2,intervalType)))
         print 'team1', runfile1
         print 'team2', runfile2
         
