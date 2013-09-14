@@ -104,10 +104,11 @@ for metric in ['MAP','nDCG@R','Prec@R']:
 
                 plt.scatter(epochsToDate(data['intervalLow']),weightedValues, c=teamColors[team], alpha=0.5)
                 #plt.xlim(0,filenames.MAX_DAYS)
-                
-                window = np.ones(int(4))/float(4)
-                intervalData = np.convolve(weightedValues, window, 'same')
-                plt.plot(epochsToDate(data['intervalLow']),intervalData, c=teamColors[team])
+
+                if len(weightedValues) > 4:
+                    window = np.ones(int(4))/float(4)
+                    intervalData = np.convolve(weightedValues, window, 'same')
+                    plt.plot(epochsToDate(data['intervalLow']),intervalData, c=teamColors[team])
 
         
         
