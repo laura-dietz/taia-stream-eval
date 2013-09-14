@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import matplotlib
+matplotlib.use('Agg')
 
 from utils import epochsToDate
 from utils import correctWeighting

@@ -2,6 +2,8 @@
 Create randomly perturbed rankings to study the robustness of the measure with respect to variations in the ground truth.
 """
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as pl
 import numpy as np
 import random
