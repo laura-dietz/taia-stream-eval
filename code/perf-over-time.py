@@ -2,6 +2,8 @@
 Plot system performance over time for days, weeks, and all.
 """
 
+import matplotlib
+matplotlib.use('Agg')
 import os.path
 import numpy as np
 from utils import *
