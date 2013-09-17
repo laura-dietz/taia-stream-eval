@@ -24,8 +24,10 @@ COLLAPSED_JUDGMENT_FILE = os.path.expanduser(
 evalTR = 1330559999   # year 2
 evalTRend = 1360368000  # year 2
 
-ALLTEAMS = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang',
-            'uiucGSLIS']
+#ALLTEAMS = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang',
+#            'uiucGSLIS']
+
+ALLTEAMS = ['UMass_CIIR']
 
 METRICS = ['MAP', 'nDCG@R', 'Prec@R', 'numPosPredictions']
 
