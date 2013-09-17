@@ -14,14 +14,14 @@ import os.path
 import numpy as np
 from numpy.lib import recfunctions
 import gzip
-from metrics import *
 import string
-from utils import *
-from truthutil import *
 from argparse import ArgumentParser
-from targetentities import *
 import csv
 import tempfile
+
+from metrics import *
+from truthutil import *
+from targetentities import *
 
 
 DEBUG = False
@@ -172,15 +172,16 @@ for entity in entityList:
                 # sort by confidence and revert (highest first)
                     slice = np.sort(slice, order=['confidence'])[::-1]
 
-
                 if DUMP_TREC_EVAL:
                     for i, row in enumerate(slice):
                         score = float(row['confidence'])
                         rank = i + 1
                         runOutputFile.write(
-                            "%s\t%s\t%s\t%d\t%f\t%s\n" % (entity, intervalType, row['docid'], rank, score, row['runname']))
+                            "%s\t%s\t%s\t%d\t%f\t%s\n" % (
+                            entity, intervalType, row['docid'], rank, score, row['runname']))
 
-                judgedPosSlice = np.array([np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
+                judgedPosSlice = np.array(
+                    [np.count_nonzero(posGroundTruth['docid'] == elem['docid']) > 0 for elem in slice])
                 unjudgedAsNegSlice = judgedPosSlice
                 numNeg = len(slice) - numPos
                 if DEBUG: print entity, i, judgmentLevel, 'pos:', numPos, 'neg:', numNeg, 'data:', len(slice)

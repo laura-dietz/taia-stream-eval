@@ -1,6 +1,5 @@
 import os.path
 import math
-import utils
 
 epochsPerWeek = int(6.048E5)
 epochsPerDay = 86400

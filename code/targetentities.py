@@ -1,10 +1,4 @@
-import re
-import os
-import sys
 import json
-import time
-import copy
-import logging
 from kbaconfig import TOPIC_FILE
 
 #filter_run = {
@@ -144,7 +138,6 @@ def loadEntities():
     return judgedEntities
 
 
-
 def shortname(entity):
-    short = entity[entity.rindex("/")+1:]
+    short = entity[entity.rindex("/") + 1:]
     return short

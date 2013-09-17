@@ -4,6 +4,7 @@ Implementation of ranking metrics.
 import numpy as np
 from numpy import sum
 
+
 def aucEval(data, gt, gf):
     """
      Area under the Receiver-Operator curve.
@@ -19,10 +20,11 @@ def aucEval(data, gt, gf):
 
     accum = np.cumsum(data)
     accum = sum(accum[np.logical_not(data)])
-    if allPairs == 0 or len(data)==0:
+    if allPairs == 0 or len(data) == 0:
         return 0.5
-        
+
     return 1. * accum / allPairs
+
 
 def normalizeAUC(data, gt, gf):
     """
@@ -31,6 +33,7 @@ def normalizeAUC(data, gt, gf):
     classicAUC = aucEval(data, gt, gf)
     scaledAUC = (classicAUC - 0.5) * 2
     return scaledAUC
+
 
 def extendedAucEval(data, gt, gf):
     """
@@ -42,10 +45,11 @@ def extendedAucEval(data, gt, gf):
 
     accum = np.cumsum(data)
     accum = sum(accum[np.logical_not(data)])
-    if allPairs == 0 or len(data)==0:
+    if allPairs == 0 or len(data) == 0:
         return 0.5
-        
+
     return 1. * accum / allPairs
+
 
 def normalizeExtendedAUC(data, gt, gf):
     """
@@ -55,13 +59,15 @@ def normalizeExtendedAUC(data, gt, gf):
     scaledAUC = (classicAUC - 0.5) * 2
     return scaledAUC
 
+
 def precREval(data, gt, gf):
     """
     Compute R-Precision (Precision at a rank that represents the number of relevant documents).
     """
-    if(gt == 0): print 'gt=0 in precREval'
-    return 1.0 * sum(data[0:gt])/gt    
-           
+    if (gt == 0): print 'gt=0 in precREval'
+    return 1.0 * sum(data[0:gt]) / gt
+
+
 def mapEval(data, gt, gf):
     """
     Compute Mean average precision following this algorithm:
@@ -77,7 +83,8 @@ def mapEval(data, gt, gf):
     prec = np.cumsum(d) / (np.arange(len(d)) + 1)
     score = 1.0 * np.sum(prec[data]) / gt
     return score
-        
+
+
 def dcg(data):
     """
     Compute Discounted Cumulative Gain which is computed by
@@ -86,16 +93,18 @@ def dcg(data):
     - sum over all values
     """
     d = np.array(data, dtype='f8')
-    return sum(d / np.log(np.arange(len(d))+2))
-    
+    return sum(d / np.log(np.arange(len(d)) + 2))
+
+
 def generate_ideal(gt, gf):
     """
     generate the ideal ranking for nDCG
     """
-    ideal = np.zeros(gt+gf)
+    ideal = np.zeros(gt + gf)
     ideal[:gt] = True
     return ideal
-    
+
+
 def ndcgEval(data, gt, gf):
     """
     Normalized Discounted Cumulative Gain:
@@ -104,18 +113,19 @@ def ndcgEval(data, gt, gf):
     ideal = generate_ideal(gt, gf)
     dcgScore = dcg(data)
     norm = dcg(ideal[:len(data)])
-    if(norm == 0): print('norm=0 in ndcgEval')
+    if (norm == 0): print('norm=0 in ndcgEval')
     return dcgScore / norm
-        
+
+
 def ndcgREval(data, gt, gf):
     """
     Compute NDCG@R, where R is the number of relevant documents
     """
-    ideal = generate_ideal(gt,gf)
+    ideal = generate_ideal(gt, gf)
     dcgScore = dcg(data[:(gt)])
     norm = dcg(ideal[:(gt)][:len(data)])
-    if(norm == 0): print('norm=0 in ndcgREval')
+    if (norm == 0): print('norm=0 in ndcgREval')
     return dcgScore / norm
 
 
-metricsMap = {'nDCG@R': ndcgREval,'Prec@R': precREval, 'MAP':mapEval}
+metricsMap = {'nDCG@R': ndcgREval, 'Prec@R': precREval, 'MAP': mapEval}

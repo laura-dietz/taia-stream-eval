@@ -12,12 +12,15 @@ epochsPerDay = kbaconfig.epochsPerDay
 evalTR = kbaconfig.evalTR
 evalTRend = kbaconfig.evalTRend
 
+
 def epochsToDate(d):
     return (d - evalTR) / epochsPerDay
+
 
 weekStarts = range(evalTR, evalTRend, epochsPerWeek)
 dayStarts = range(evalTR, evalTRend, epochsPerDay)
 allStarts = [evalTR]
+
 
 def intervalRange(epochsPerInterval):
     starts = xrange(evalTR, evalTRend, epochsPerInterval)
@@ -29,23 +32,26 @@ def correctWeighting(values, posData, totalposvalues, numberOfIntervals):
     return correctedWeightingMultiMix(values, posData, totalposvalues, numberOfIntervals)
 
 
-
 def correctedWeightingGeoMean(values, posData, totalposvalues, numberOfIntervals):
-    correctedWeighting = values ** (posData/totalposvalues*numberOfIntervals)
+    correctedWeighting = values ** (posData / totalposvalues * numberOfIntervals)
     return correctedWeighting
 
 
 def correctedWeightingMultiMix(values, posData, totalposvalues, numberOfIntervals):
-    correctedWeighting = posData/totalposvalues*numberOfIntervals*values
+    correctedWeighting = posData / totalposvalues * numberOfIntervals * values
     return correctedWeighting
 
 
 def correctedWeightingUnif(values, posData, totalposvalues, numberOfIntervals):
     return values
-    
-    
+
+
 def renameMetric(metric):
-    if metric=='Prec@R': return 'R-prec'
-    elif metric=='correctedAUC': return 'ROC-AUC'
-    elif metric == 'nDCG@R': return 'NDCG@R'    
-    else: return metric
+    if metric == 'Prec@R':
+        return 'R-prec'
+    elif metric == 'correctedAUC':
+        return 'ROC-AUC'
+    elif metric == 'nDCG@R':
+        return 'NDCG@R'
+    else:
+        return metric
