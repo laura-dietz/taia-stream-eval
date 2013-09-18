@@ -80,5 +80,5 @@ judged100EntitiesListYear2 = [
 'https://twitter.com/urbren00'
 ]
 
-ENTITIES = judged100EntitiesListYear2
-#ENTITIES = None
+#ENTITIES = judged100EntitiesListYear2
+ENTITIES = None # use all year2 entities with judgments
