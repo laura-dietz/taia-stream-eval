@@ -1,3 +1,4 @@
+from os import mkdir
 import matplotlib
 
 matplotlib.use('Agg')
@@ -27,7 +28,7 @@ DEBUG = False
 evalDir = '~/kba-evaluation/taia/data/intervals/'
 
 parser = ArgumentParser()
-parser.add_argument('--plot-teams', action='store_true', default=False)
+parser.add_argument('--plot-entities', action='store_true', default=False)
 parser.add_argument('--judgmentLevel', type=int, help='Judgement level', default=1)
 parser.add_argument('--subplot', action='store_true', help='Plot everything on one figure', default=False)
 parser.add_argument('--weighted', action='store_true', default=False)
@@ -35,7 +36,7 @@ parser.add_argument('-d', '--dir', metavar='DIR', default=evalDir)
 args = parser.parse_args()
 
 judgmentLevel = args.judgmentLevel
-plotTeams = args.plot_teams
+plotEntities = args.plot_entities
 CORRECTED = args.weighted
 evalDir = args.dir
 
@@ -56,7 +57,6 @@ allRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.pa
 testEntityList = ['Alex_Kapranos', 'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
 fullEntityList = targetentities.loadEntities()
 entityList = fullEntityList
-if DEBUG: entityList = fullEntityList
 
 
 
@@ -109,8 +109,7 @@ intervalTypeDuration = {'all': (evalTRend - evalTR), 'week': epochsPerWeek, 'day
 
 fig = plt.figure()
 
-allteams = ['CWI', 'LSIS', 'PRIS', 'SCIAITeam', 'UMass_CIIR', 'UvA', 'helsinki', 'hltcoe', 'igpi2012', 'udel_fang',
-            'uiucGSLIS']
+allteams = kbaconfig.ALLTEAMS
 teamColors = {team: cm.hsv(1. * i / len(allteams), 1) for i, team in enumerate(np.unique(allteams))}
 #teamColors={team:cm.summer(i,1) for i,team in enumerate(np.unique(allteams))}
 
@@ -120,7 +119,10 @@ print teamColors
 def teamColor(team):
     return teamColors[team]
 
-
+plotDir = 'truth/'
+if not os.path.exists(evalDir + plotDir):
+    os.makedirs(evalDir + plotDir)
+print "writing plots to ", (evalDir + plotDir)
 teamss = []
 
 
@@ -133,6 +135,9 @@ def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
             fig.add_subplot(1, 2, 1)
         plt.locator_params(axis='both', nbins=5)
         plt.title(intervalType)
+        if len(entityList) == 1:
+                plt.title('%s   %s' % (intervalType, targetentities.shortname(entityList[0])))
+
         for runIdx, evalFile in enumerate(sorted(runfiles[:])):
             print ' processing evalFile', evalFile
             df = np.genfromtxt(evalFile, dtype=eval_dtype, missing_values='', autostrip=False, delimiter='\t')
@@ -157,7 +162,7 @@ def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
                     ]
 
 
-                    #compute numPos / totalPos * numScoredIntervals * values 
+                    #compute numPos / totalPos * numScoredIntervals * values
 
                     #                    correctedValues = [ data[data['query']==entity]['value'][0]
                     #                       if np.count_nonzero(data['query']==entity)>0 else 0.0
@@ -199,11 +204,12 @@ def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
             plt.ylabel(metric)
             plt.xlabel('ETR days')
 
+
         #plt.gca().autoscale_view(tight=True, scalex=True, scaley=False)
-        plt.xlim(0, kbaconfig.MAX_DAYS)
+        #plt.xlim(0, kbaconfig.MAX_DAYS)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf" % (
-            prefix, intervalType, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
+                prefix, intervalType, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()
     if args.subplot: fig.subplots_adjust(hspace=0.5, wspace=0.5)
     if args.subplot: plt.savefig(
@@ -211,29 +217,28 @@ def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
         bbox_inches='tight')
     plt.clf()
 
-
 # ground truth plot
 def plotTruth():
-#for team in allteams[5:6]:
-    team = 'UvA'
-    #team = 'UMass_CIIR'
     tweekRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                     file.endswith('week.tsv') and team in file]
+                     file.endswith('week.tsv')]
     tdayRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('day.tsv') and team in file]
+                    file.endswith('day.tsv')]
     tallRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('all.tsv') and team in file]
+                    file.endswith('all.tsv')]
 
     intervalRunfiles = {'all': tallRunfiles[:1], 'week': tweekRunfiles[:1], 'day': tdayRunfiles[:1]}
-    for metric in ['numPos', 'numPredictions']:
-        createTruthPlot(os.path.expanduser(evalDir) + '_groundtruth_', intervalRunfiles, metric, entityList)
+    #for metric in ['numPos', 'numPredictions']:
+    for metric in ['numPos']:
+        createTruthPlot(os.path.expanduser(evalDir) + 'truth/' + '_groundtruth_', intervalRunfiles, metric, entityList)
 
-    for entity in entityList:
-        for metric in ['numPos', 'numPredictions']:
-            createTruthPlot(os.path.expanduser(evalDir) + entity + '_groundtruth_', intervalRunfiles, metric, [entity])
+    if plotEntities:
+        for entity in entityList:
+            for metric in ['numPos']:
+                createTruthPlot(
+                    os.path.expanduser(evalDir) + 'truth/' + targetentities.shortname(entity) + '_groundtruth_',
+                    intervalRunfiles, metric, [entity])
 
 
-#plotTeams()
 plotTruth()
 
 

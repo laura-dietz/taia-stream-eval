@@ -37,9 +37,9 @@ print "writing plots to ", (evalDir + plotDir)
 
 metrics = kbaconfig.METRICS
 
-weekRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
-dayRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
-allRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
+weekRunfiles = [evalDir + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('week.tsv')]
+dayRunfiles = [evalDir + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('day.tsv')]
+allRunfiles = [evalDir + file for file in os.listdir(os.path.expanduser(evalDir)) if file.endswith('all.tsv')]
 
 testEntityList = ['Alex_Kapranos', 'Darren_Rowse', 'Satoshi_Ishii', 'Bill_Coen']
 fullEntityList = targetentities.loadEntities()
@@ -91,7 +91,7 @@ def teamColor(team):
 teamss = []
 
 
-def createPlot(prefix, intervalRunfiles, metric, entityList):
+def createPlot(prefix, intervalRunfiles, metric, entityList, optionalRunColors=None):
     fig = plt.figure(figsize=(8.0, 4.0))
     for idx, (intervalType, runfiles) in enumerate(intervalRunfiles.items()[:]):
         if args.subplot:
@@ -115,9 +115,9 @@ def createPlot(prefix, intervalRunfiles, metric, entityList):
                                          np.logical_and(df['metric'] == metric, df['judgmentLevel'] == judgmentLevel))]
 
                 if len(data) > 0:
-                    allvalues = [data[data['query'] == entity]['value']
-                                 for entity in entityList
-                    ]
+                    #allvalues = [data[data['query'] == entity]['value']
+                    #             for entity in entityList
+                    #]
 
                     # print 'allvalues', allvalues
 
@@ -160,7 +160,7 @@ def createPlot(prefix, intervalRunfiles, metric, entityList):
 
             #print 'xs',xs
             #print 'ys', ys
-            plotcolor = teamColors[team]
+            plotcolor = teamColors[team] if (optionalRunColors is None) else optionalRunColors[runIdx]
             plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color=plotcolor, alpha=0.5, ls='-', marker='.')
             if args.subplot and idx == 0:
                 plt.legend(loc='center left', bbox_to_anchor=(1. + (idx * 0.5), 0.5), fontsize='small')
@@ -169,10 +169,10 @@ def createPlot(prefix, intervalRunfiles, metric, entityList):
             plt.ylabel(renameMetric(metric))
             plt.xlabel('ETR days')
 
-        plt.xlim(0, kbaconfig.MAX_DAYS)
+        #plt.xlim(0, kbaconfig.MAX_DAYS)
         if not args.subplot:
             plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf" % (
-            prefix, intervalType, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
+                prefix, intervalType, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()
     if args.subplot: fig.subplots_adjust(hspace=0.5, wspace=0.5)
     if args.subplot: plt.savefig(
@@ -186,22 +186,25 @@ def plotAll(prefix):
         createPlot(evalDir + plotDir + prefix + '_', allIntervalRunfiles, metric, entityList)
 
 
+LASTIDX = 20
+indexedColors = [cm.hsv(1. * i / LASTIDX, 1) for i in range(0, LASTIDX)]
+
+
 def plotTeams():
     if plot_teams:
         for team in allteams[:]:
             print 'processing team', team
-            tweekRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if
-                             file.endswith('week.tsv') and team in file]
-            tdayRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if
-                            file.endswith('day.tsv') and team in file]
-            tallRunfiles = [(evalDir) + file for file in os.listdir(os.path.expanduser(evalDir)) if
-                            file.endswith('all.tsv') and team in file]
+            tweekRunfiles = [teamFile for teamFile in weekRunfiles if team in (open(teamFile)).readline()]
+            tdayRunfiles = [teamFile for teamFile in dayRunfiles if team in (open(teamFile)).readline()]
+            tallRunfiles = [teamFile for teamFile in allRunfiles if team in (open(teamFile)).readline()]
 
             intervalRunfiles = {'all': tallRunfiles[:], 'week': tweekRunfiles[:], 'day': tdayRunfiles[:]}
+
             for metric in metrics:
-                createPlot(evalDir + plotDir + team + '_', intervalRunfiles, metric, entityList)
+                createPlot(evalDir + plotDir + team + '_', intervalRunfiles, metric, entityList,
+                           optionalRunColors=indexedColors)
 
 
-plotAll('overview')
 plotTeams()
+plotAll('overview')
 

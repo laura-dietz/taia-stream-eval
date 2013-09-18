@@ -17,6 +17,9 @@ echo "you need to modify the python scripts collapse-truth-judgment.py and truth
 
 python collapse-truth-judgment.py
 
+## Plot distribution over positive judgments over time, overview and one plot per entity
+python $PYTHONPATH/truth-over-time.py -d $datadir/ --judgmentLevel $judgmentLevel --plot-entities
+
 
 ## ====== MEASURE SLICE PERFORMANCE =====
 
