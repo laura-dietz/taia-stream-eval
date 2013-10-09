@@ -171,6 +171,15 @@ for entity in entityList:
                 if (len(slice) > 0):
                 # sort by confidence and revert (highest first)
                     slice = np.sort(slice, order=['confidence'])[::-1]
+                    #oldslice = slice
+                    len_orig_slice = len(slice)
+                    (_, unique_slice_idx) = np.unique([s['docid'] for s in slice], return_index=True)
+                    slice = slice[unique_slice_idx]
+                    #len_dedupe_slice = len(slice)
+                    #if len_dedupe_slice != len_orig_slice:
+                    #    print 'removing',(len_orig_slice-len_dedupe_slice),' duplicate docids for', entity,'@',intervalLow
+                    #    #print oldslice[np.delete(np.arange(len(oldslice)),unique_slice_idx)]
+
 
                 if DUMP_TREC_EVAL:
                     for i, row in enumerate(slice):
