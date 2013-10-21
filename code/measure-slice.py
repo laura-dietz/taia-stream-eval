@@ -97,6 +97,8 @@ def readPredictionsHeader(fname):
     f = gzip.open(fname, mode='r')
     firstline = f.readline()
     secondline = f.readline()
+    if len(secondline.strip())==0:
+        raise "Can't get team informationL: file %s does not contain predictions" % fname
     team, runname, rest = string.split(secondline, maxsplit=2)
     f.close()
     return (team, runname)
