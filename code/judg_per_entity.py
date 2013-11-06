@@ -37,7 +37,7 @@ entityList = testEntityList
 
 
 eval_dtype = np.dtype(
-    [('team', '50a'), ('runname', '50a'), ('query', '50a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
+    [('team', '50a'), ('runname', '50a'), ('query', '150a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
      ('unjudged', '50a'), ('judgmentLevel', 'd4'), ('metric', '50a'), ('value', 'f4')])
 
 #df = np.genfromtxt(os.path.expanduser(evalFile), dtype=eval_dtype, missing_values='', autostrip=False, delimiter='\t')

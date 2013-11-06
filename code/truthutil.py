@@ -30,7 +30,7 @@ def memoize(f):
 
 
 def read_judgments(fname):
-    judg_dtype = np.dtype([('docid', '50a'), ('query', '50a'),
+    judg_dtype = np.dtype([('docid', '50a'), ('query', '150a'),
                            ('label', 'd4'), ('time', 'd4')])
     a = np.genfromtxt(fname, dtype=judg_dtype, usecols=[1, 2, 4, 5], delimiter='\t')
     # this code is not needed anymore

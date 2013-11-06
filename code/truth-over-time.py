@@ -64,7 +64,7 @@ entityList = fullEntityList
 
 
 eval_dtype = np.dtype(
-    [('team', '50a'), ('runname', '50a'), ('query', '50a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
+    [('team', '50a'), ('runname', '50a'), ('query', '150a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
      ('unjudged', '50a'), ('judgmentLevel', 'd4'), ('metric', '50a'), ('value', 'f4')])
 
 
@@ -126,9 +126,12 @@ print "writing plots to ", (evalDir + plotDir)
 teamss = []
 
 
-def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
-    plt.suptitle(metric + '_' + correctedToStr())
-    for idx, (intervalType, runfiles) in enumerate(intervalRunfiles.items()[:]):
+
+
+def createTruthPlot(prefix, entityList):
+    plt.suptitle(correctedToStr())
+    #for idx, (intervalType, runfiles) in enumerate(intervalRunfiles.items()[:]):
+    for idx, (intervalType, intervalList) in enumerate(intervalBounds[judgmentLevel].items()):
         if args.subplot:
             fig.add_subplot(3, 2, (idx * 2 + 1))
         else:
@@ -138,127 +141,92 @@ def createTruthPlot(prefix, intervalRunfiles, metric, entityList):
         if len(entityList) == 1:
                 plt.title('%s   %s' % (intervalType, targetentities.shortname(entityList[0])))
 
-        for runIdx, evalFile in enumerate(sorted(runfiles[:])):
-            print ' processing evalFile', evalFile
-            df = np.genfromtxt(evalFile, dtype=eval_dtype, missing_values='', autostrip=False, delimiter='\t')
-            team = df[0]['team']
-            teamss.append(team)
-            runname = df[0]['runname']
-            ys = []
-            xs = []
-            seriesLabel = team + ' ' + runname
+        ys = []
+        xs = []
 
 
-            #print 'intervalBounds', intervalType, intervalBounds[judgmentLevel][intervalType]
-            for (intervalLow, intervalUp) in intervalBounds[judgmentLevel][intervalType]:
-                data = df[np.logical_and(df['intervalLow'] == intervalLow,
-                                         np.logical_and(df['metric'] == metric, df['judgmentLevel'] == judgmentLevel))]
-
-                if len(data) > 0:
-                    values = [data[data['query'] == entity]['value'][0]
-                              if np.count_nonzero(data['query'] == entity) > 0 else 0.0
-                              for entity in entityList
-                              if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
-                    ]
+        for (intervalLow, intervalUp) in intervalList:
+                values = [posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp)
+                          for entity in entityList
+                          if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
+                ]
 
 
-                    #compute numPos / totalPos * numScoredIntervals * values
+                #compute numPos / totalPos * numScoredIntervals * values
 
-                    #                    correctedValues = [ data[data['query']==entity]['value'][0]
-                    #                       if np.count_nonzero(data['query']==entity)>0 else 0.0
-                    #                      for entity in entityList
-                    #                     #if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
-                    #                    ]
+                #                    correctedValues = [ data[data['query']==entity]['value'][0]
+                #                       if np.count_nonzero(data['query']==entity)>0 else 0.0
+                #                      for entity in entityList
+                #                     #if isPosIntervalForEntity(judgmentLevel, entity, intervalLow, intervalUp)
+                #                    ]
 
+                team='truth'
+                metric = 'numPos'
+                unjudgedAs = 'false'
+                runname = 'truth'
+                uniformWeighting = values
 
-                    team = data[0]['team']
-                    runname = data[0]['runname']
-                    unjudgedAs = data[0]['unjudged']
-                    uniformWeighting = values
+                weightedValues = uniformWeighting
 
-                    weightedValues = uniformWeighting
+                records.append(createStatsRecord(team, runname, intervalLow, unjudgedAs, judgmentLevel, metric,
+                                                 np.sum(weightedValues), np.std(weightedValues), intervalType))
+                ys.append(np.sum(weightedValues))
+                xs.append(intervalLow)
 
-                    #print 'uniform =',np.mean(uniformWeighting), ' corrected=',np.mean(correctedWeighting),' choosing ',np.mean(weightedValues)
-                    records.append(createStatsRecord(team, runname, intervalLow, unjudgedAs, judgmentLevel, metric,
-                                                     np.mean(weightedValues), np.std(weightedValues), intervalType))
-                    ys.append(np.mean(weightedValues))
-                    xs.append(intervalLow)
+        if (ys) and intervalType == 'all':
+            xs.append(evalTRend)
+            ys.append(ys[-1])
 
+        #plotcolor = teamColors[team]
+        plt.plot(epochsToDate(np.array(xs)), ys, label='truth', color='k', alpha=0.5, ls='', marker='o')
 
-                    #else:
-                    #ys.append(0.0)
-                    #xs.append(intervalLow)
-            if (ys) and intervalType == 'all':
-                xs.append(evalTRend)
-                ys.append(ys[-1])
+        # moving average
+        if (not intervalType == 'all'):
+            window = np.ones(int(7)) / float(7)
+            ywindow = np.convolve(ys, window, 'same')
+            plt.plot(epochsToDate(np.array(xs)), ywindow, color='k')
 
-            #plotcolor = teamColors[team]
-            plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color='k', alpha=0.5, ls='', marker='o')
-
-            # moving average
-            if (not intervalType == 'all'):
-                window = np.ones(int(7)) / float(7)
-                ywindow = np.convolve(ys, window, 'same')
-                plt.plot(epochsToDate(np.array(xs)), ywindow, color='k')
-
-            plt.ylabel(metric)
-            plt.xlabel('ETR days')
+        plt.ylabel(metric)
+        plt.xlabel('ETR days')
 
 
-        #plt.gca().autoscale_view(tight=True, scalex=True, scaley=False)
-        #plt.xlim(0, kbaconfig.MAX_DAYS)
         if not args.subplot:
-            plt.savefig("%s%s_%s_teams_over_time_%s_%s.pdf" % (
+            plt.savefig("%s%s_%s_truth_over_time_%s_%s.pdf" % (
                 prefix, intervalType, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()), bbox_inches='tight')
             plt.clf()
     if args.subplot: fig.subplots_adjust(hspace=0.5, wspace=0.5)
     if args.subplot: plt.savefig(
-        "%s%s_teams_over_time_%s_%s.pdf" % (prefix, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()),
+        "%s%s_truth_over_time_%s_%s.pdf" % (prefix, metric, judgmentLevelToStr(judgmentLevel), correctedToStr()),
         bbox_inches='tight')
     plt.clf()
 
 # ground truth plot
 def plotTruth():
-    tweekRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                     file.endswith('week.tsv')]
-    tdayRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('day.tsv')]
-    tallRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('all.tsv')]
+    highJudgedEntities = [ent for ent in entityList if len(trueDocs(judgmentLevel,ent, evalTR, evalTRend)) > 100]
 
-    intervalRunfiles = {'all': tallRunfiles[:1], 'week': tweekRunfiles[:1], 'day': tdayRunfiles[:1]}
-    #for metric in ['numPos', 'numPredictions']:
-    for metric in ['numPos']:
-        createTruthPlot(os.path.expanduser(evalDir) + 'truth/' + '_groundtruth_', intervalRunfiles, metric, entityList)
+    print 'entity','totalPositive','weeksWithPositive'
+    for entity in highJudgedEntities:
+        print entity,(len(trueDocs(judgmentLevel,entity, evalTR, evalTRend))), numPosIntervals(judgmentLevel,entity,'week')
+
+    createTruthPlot(
+        os.path.expanduser(evalDir) + 'truth/' + '_groundtruth_',
+        highJudgedEntities)
 
     if plotEntities:
-        for entity in entityList:
-            for metric in ['numPos']:
-                createTruthPlot(
-                    os.path.expanduser(evalDir) + 'truth/' + targetentities.shortname(entity) + '_groundtruth_',
-                    intervalRunfiles, metric, [entity])
+        for entity in highJudgedEntities:
+            createTruthPlot(
+                os.path.expanduser(evalDir) + 'truth/' + targetentities.shortname(entity) + '_groundtruth_',
+                [entity])
 
 
 plotTruth()
 
 
 def plotPaper():
-    team = 'UvA'
-    #team = 'UMass_CIIR'
-    tweekRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                     file.endswith('week.tsv') and team in file]
-    tdayRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('day.tsv') and team in file]
-    tallRunfiles = [(os.path.expanduser(evalDir) + file) for file in os.listdir(os.path.expanduser(evalDir)) if
-                    file.endswith('all.tsv') and team in file]
-
-    intervalRunfiles = {'all': tallRunfiles[:1], 'week': tweekRunfiles[:1], 'day': tdayRunfiles[:1]}
-    for metric in ['numPos', 'numPredictions']:
-        createTruthPlot(os.path.expanduser(evalDir) + '_groundtruth_', intervalRunfiles, metric, entityList)
+    createTruthPlot(os.path.expanduser(evalDir) + '_groundtruth_', entityList)
 
     entity = 'Mario_Garnero'
-    for metric in ['numPos', 'numPredictions']:
-        createTruthPlot(os.path.expanduser(evalDir) + entity + '_groundtruth_', intervalRunfiles, metric, [entity])
+    createTruthPlot(os.path.expanduser(evalDir) + entity + '_groundtruth_', [entity])
 
 
 

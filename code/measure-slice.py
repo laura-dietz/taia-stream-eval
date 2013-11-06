@@ -44,12 +44,12 @@ intervalType = args.intervalType
 runFile = args.runFile
 DUMP_TREC_EVAL = args.trec_eval  # also create output for trec_eval.
 
-entry_dtype = np.dtype([('runname', '50a'), ('docid', '50a'), ('query', '50a'),
+entry_dtype = np.dtype([('runname', '50a'), ('docid', '50a'), ('query', '150a'),
                         ('confidence', 'd4')])
-judg_dtype = np.dtype([('docid', '50a'), ('query', '50a'),
+judg_dtype = np.dtype([('docid', '50a'), ('query', '150a'),
                        ('label', 'd4')])
 eval_dtype = np.dtype(
-    [('team', '50a'), ('runname', '50a'), ('query', '50a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
+    [('team', '50a'), ('runname', '50a'), ('query', '150a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
      ('unjudged', '50a'), ('judgmentLevel', 'd4'), ('metric', '50a'), ('value', 'f4')])
 
 

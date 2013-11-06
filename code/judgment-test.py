@@ -18,12 +18,12 @@ DEBUG = False
 #metrics = metricsMap
 
 
-entry_dtype = np.dtype([('docid', '50a'), ('query', '50a'),
+entry_dtype = np.dtype([('docid', '50a'), ('query', '150a'),
                         ('confidence', 'd4')])
-judg_dtype = np.dtype([('docid', '50a'), ('query', '50a'),
+judg_dtype = np.dtype([('docid', '50a'), ('query', '150a'),
                        ('label', 'd4')])
 eval_dtype = np.dtype(
-    [('team', '50a'), ('runname', '50a'), ('query', '50a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
+    [('team', '50a'), ('runname', '50a'), ('query', '150a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
      ('unjudged', '50a'), ('metric', '50a'), ('value', 'f4')])
 
 

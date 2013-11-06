@@ -55,7 +55,7 @@ else:
     entityList = fullEntityList
 
 eval_dtype = np.dtype(
-    [('team', '50a'), ('runname', '50a'), ('query', '50a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
+    [('team', '50a'), ('runname', '50a'), ('query', '150a'), ('intervalLow', 'd4'), ('intervalUp', 'd4'),
      ('unjudged', '50a'), ('judgmentLevel', 'd4'), ('metric', '50a'), ('value', 'f4')])
 
 
@@ -93,7 +93,7 @@ for metric in ['MAP', 'nDCG@R', 'Prec@R']:
 
         totalposvalues = posTruths(judgmentLevel, entity)
 
-        def plot(data, posData, CORRECTED, team, metric):
+        def plot(data, posData, CORRECTED, team, metric,color):
 
             if (len(data) > 0):
                 values = data['value']
@@ -108,26 +108,30 @@ for metric in ['MAP', 'nDCG@R', 'Prec@R']:
 
                 print "plotting side by side", team, weightedValues
 
-                plt.scatter(epochsToDate(data['intervalLow']), weightedValues, c=teamColors[team], alpha=0.5)
+                plt.scatter(epochsToDate(data['intervalLow']), weightedValues, c=color, alpha=0.5)
                 #plt.xlim(0,filenames.MAX_DAYS)
 
                 if len(weightedValues) > 4:
                     window = np.ones(int(4)) / float(4)
                     intervalData = np.convolve(weightedValues, window, 'same')
-                    plt.plot(epochsToDate(data['intervalLow']), intervalData, c=teamColors[team])
+                    plt.plot(epochsToDate(data['intervalLow']), intervalData, c=color)
 
+        color1 = teamColors[team1]
+        color2 = teamColors[team2]
+        if team1 == team2:
+            color2 = 'k'
 
         fig.add_subplot(1, 2, 1)
-        plot(data1, posData1, False, team1, metric)
-        plot(data2, posData2, False, team2, metric)
+        plot(data1, posData1, False, team1, metric,color1)
+        plot(data2, posData2, False, team2, metric,color2)
         plt.ylabel(renameMetric(metric))
         plt.xlabel('ETR days')
         #plt.xlim(0, filenames.MAX_DAYS)
         plt.title(correctedToStrs(False))
 
         fig.add_subplot(1, 2, 2)
-        plot(data1, posData1, True, team1, metric)
-        plot(data2, posData2, True, team2, metric)
+        plot(data1, posData1, True, team1, metric,color1)
+        plot(data2, posData2, True, team2, metric,color2)
         plt.ylabel(renameMetric(metric))
         plt.xlabel('ETR days')
         #plt.xlim(0, filenames.MAX_DAYS)

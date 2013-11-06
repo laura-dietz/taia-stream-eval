@@ -16,7 +16,7 @@ from kbaconfig import *
 
 
 def read_judgments(fname):
-    judg_dtype = np.dtype([('dummy1', '50a'), ('docid', '50a'), ('query', '50a'),
+    judg_dtype = np.dtype([('dummy1', '50a'), ('docid', '50a'), ('query', '150a'),
                            ('conf', 'd4'), ('label', 'd4')])
     a = np.genfromtxt(fname, dtype=judg_dtype, usecols=[1, 2, 3, 4, 5])
     times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
@@ -43,7 +43,7 @@ def filter_doublejudgments(a, onlyPos):
             if not onlyPos or single_doc['label'] > 0:
                 records.append(single_doc)
                 counter += 1
-        print entity, counter
+        print '%s\t%d'%(entity, counter)
 
     df = np.hstack(records)
     return df
