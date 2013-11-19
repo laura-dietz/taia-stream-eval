@@ -61,23 +61,59 @@ class Annotations(object):
         #print 'generating prediction cache for', fname.filename
         self.entity_files = {}
 
-        annotation_file = csv.reader(fname, delimiter='\t')
-        for line in annotation_file:
-            if len(line) < 4: continue
-            entity = line[3]
+        ## Open the run file
+        #if fname.endswith('.gz'):
+        #run_file = gzip.open(fname, 'r')
+        #else:
+        #    run_file = open(fname, 'r')
+
+        for onerow in fname:
+            ## Skip Comments
+            if onerow.startswith('#') or len(onerow.strip()) == 0:
+                continue
+
+            row = onerow.split()
+            outrow = '\t'.join(row)
+            print 'outrow',outrow
+            stream_id = row[2]
+            timestamp = int(stream_id.split('-')[0])
+            entity = row[3]
+            conf = int(float(row[4]))
+            assert 0 < conf <= 1000
+            row[4] = conf
+
+            rating = int(row[5])
+            assert -1 <= rating <= 2
+            row[5] = rating
+
             if entity not in self.entity_files:
                 self.entity_files[entity] = tempfile.NamedTemporaryFile(prefix='kba', delete=True)
-            self.entity_files[entity].write('\t'.join(line) + '\n')
+            self.entity_files[entity].write(outrow+'\n')
 
+
+        #annotation_file = csv.reader(fname, delimiter='\t')
+        #for line in annotation_file:
+        #    if len(line) < 4: continue
+        #    entity = line[3]
+        #    print entity
+        #    if entity not in self.entity_files:
+        #        self.entity_files[entity] = tempfile.NamedTemporaryFile(prefix='kba', delete=True)
+        #    self.entity_files[entity].write('\t'.join(line) + '\n')
+        #
         print 'indexed predictions for %d entities' % (len(self.entity_files))
+        for e in self.entity_files:
+            print e
 
     def get_predictions(self, entity):
         if entity not in self.entity_files:
             return None
         f = self.entity_files[entity]
         f.seek(0)
-        a = np.genfromtxt(f, dtype=entry_dtype, usecols=[1, 2, 3, 4])
-        #print 'read %d predictions' % len(a)
+        a = np.genfromtxt(f, dtype=entry_dtype,  usecols=[1, 2, 3, 4])
+        #print f.name,'a',a
+
+        if a.shape is ():
+            a = np.array([a])
         times = [int(t) for t in np.core.defchararray.partition(a['docid'], '-')[:, 0]]
         return recfunctions.append_fields(a, 'time', times)
 
