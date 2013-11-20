@@ -210,9 +210,11 @@ for entity in entityList:
                 # sort by confidence and revert (highest first)
                     slice = np.sort(slice, order=['confidence'])[::-1]
                     #oldslice = slice
-                    len_orig_slice = len(slice)
                     (_, unique_slice_idx) = np.unique([s['docid'] for s in slice], return_index=True)
-                    slice = slice[unique_slice_idx]
+                    slice = slice[unique_slice_idx] # remove duplicate documents
+                    len_orig_slice = len(slice)
+
+
                     #len_dedupe_slice = len(slice)
                     #if len_dedupe_slice != len_orig_slice:
                     #    print 'removing',(len_orig_slice-len_dedupe_slice),' duplicate docids for', entity,'@',intervalLow

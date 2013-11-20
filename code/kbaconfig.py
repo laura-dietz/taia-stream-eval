@@ -18,8 +18,10 @@ epochsPerDay = 86400
 
 TOPIC_FILE = '/home/dietz/kbbridge/code/kba-y2/data/trec-kba-ccr-and-ssf-2013-04-22/trec-kba-ccr-and-ssf-query-topics-2013-04-08.json'
 ORIG_JUDGMENT_FILE = '/home/dietz/kba-evaluation/kba-scorer-y2/data/trec-kba-ccr-judgments-2013-09-26-expanded-with-ssf-inferred-vitals-plus-len-clean_visible.before-and-after-cutoff.filter-run.txt'  # year 2
+#COLLAPSED_JUDGMENT_FILE = os.path.expanduser(
+#    '~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-09-26.filter-run.txt') # year 2
 COLLAPSED_JUDGMENT_FILE = os.path.expanduser(
-    '~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-09-26.filter-run.txt') # year 2
+    '~/kba-evaluation/taia-stream-eval/data/collapsed-onlypos-trec-kba-ccr-2013-judgments-2013-09-26.filter-run-official.csv') # year 2
 
 evalTR = 1330559999   # year 2
 evalTRend = 1360368000  # year 2
