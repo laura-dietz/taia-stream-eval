@@ -49,6 +49,12 @@ def trueDocs(judgmentLevel, entity, intervalLow, intervalUp):
     return posTruth
 
 
+def judgedDocs(entity, intervalLow, intervalUp):
+    judged = j[np.logical_and(j['query'] == entity,
+                                   np.logical_and(j['time'] >= intervalLow,
+                                                  j['time'] < intervalUp))]
+    return judged
+
 @memoize
 def posTruthsInterval(judgmentLevel, entity, intervalLow, intervalUp):
     posTruth = j[np.logical_and(j['query'] == entity,

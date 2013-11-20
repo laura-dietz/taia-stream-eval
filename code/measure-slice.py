@@ -206,12 +206,21 @@ for entity in entityList:
             else: # a is not None
                 # segment data
                 slice = a[np.logical_and(a['time'] >= intervalLow, a['time'] < intervalUp)]
+                is_judged = set(judgedDocs(entity, intervalLow, intervalUp)['docid'])
+
                 if (len(slice) > 0):
-                # sort by confidence and revert (highest first)
+                    # filter out documents for which we do not have judgments
+                    judgedMask = np.vectorize(lambda x: x in is_judged)(slice['docid'])
+                    slice = slice[judgedMask]
+
+
+                    # sort by confidence and revert (highest first)
                     slice = np.sort(slice, order=['confidence'])[::-1]
                     #oldslice = slice
                     (_, unique_slice_idx) = np.unique([s['docid'] for s in slice], return_index=True)
                     slice = slice[unique_slice_idx] # remove duplicate documents
+
+
                     len_orig_slice = len(slice)
 
 
