@@ -68,6 +68,12 @@ def precREval(data, gt, gf):
     return 1.0 * sum(data[0:gt]) / gt
 
 
+def prec10(data, gt, gf):
+    return 1.0 * sum(data[0:10]) /10
+
+def prec100(data, gt, gf):
+    return 1.0 * sum(data[0:100]) /100
+
 def mapEval(data, gt, gf):
     """
     Compute Mean average precision following this algorithm:
@@ -128,4 +134,4 @@ def ndcgREval(data, gt, gf):
     return dcgScore / norm
 
 
-metricsMap = {'nDCG@R': ndcgREval, 'Prec@R': precREval, 'MAP': mapEval}
+metricsMap = {'nDCG@R': ndcgREval, 'Prec@R': precREval, 'MAP': mapEval, 'P10':prec10, 'P100':prec100}

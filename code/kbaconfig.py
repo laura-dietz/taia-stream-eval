@@ -29,7 +29,7 @@ evalTRend = 1360368000  # year 2
 
 ALLTEAMS = ['UMass_CIIR']
 
-METRICS = ['MAP', 'nDCG@R', 'Prec@R', 'numPosPredictions']
+METRICS = ['MAP', 'nDCG@R', 'Prec@R', 'numPosPredictions', 'P10', 'P100']
 
 MAX_DAYS = math.ceil((evalTRend - evalTR) / epochsPerDay)
 
