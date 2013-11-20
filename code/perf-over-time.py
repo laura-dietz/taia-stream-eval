@@ -161,7 +161,11 @@ def createPlot(prefix, intervalRunfiles, metric, entityList, optionalRunColors=N
             #print 'xs',xs
             #print 'ys', ys
             plotcolor = teamColors[team] if (optionalRunColors is None) else optionalRunColors[runIdx]
-            plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color=plotcolor, alpha=0.5, ls='-', marker='.')
+            if('top2' in seriesLabel):
+                linestyle='--'
+            else:
+                linestyle='-'
+            plt.plot(epochsToDate(np.array(xs)), ys, label=seriesLabel, color=plotcolor, alpha=0.5, ls=linestyle, marker='.')
             if args.subplot and idx == 0:
                 plt.legend(loc='center left', bbox_to_anchor=(1. + (idx * 0.5), 0.5), fontsize='small')
             if not args.subplot:

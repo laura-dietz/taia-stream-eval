@@ -69,10 +69,10 @@ def precREval(data, gt, gf):
 
 
 def prec10(data, gt, gf):
-    return 1.0 * sum(data[0:10]) /10
+    return 1.0 * sum(data[0:10]) / 10
 
 def prec100(data, gt, gf):
-    return 1.0 * sum(data[0:100]) /100
+    return 1.0 * sum(data[0:100]) / 100
 
 def mapEval(data, gt, gf):
     """
