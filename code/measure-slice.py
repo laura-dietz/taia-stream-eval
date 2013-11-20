@@ -74,7 +74,7 @@ class Annotations(object):
 
             row = onerow.split()
             outrow = '\t'.join(row)
-            print 'outrow',outrow
+            #print 'outrow',outrow
             stream_id = row[2]
             timestamp = int(stream_id.split('-')[0])
             entity = row[3]
@@ -101,8 +101,8 @@ class Annotations(object):
         #    self.entity_files[entity].write('\t'.join(line) + '\n')
         #
         print 'indexed predictions for %d entities' % (len(self.entity_files))
-        for e in self.entity_files:
-            print e
+        #for e in self.entity_files:
+        #    print e
 
     def get_predictions(self, entity):
         if entity not in self.entity_files:
